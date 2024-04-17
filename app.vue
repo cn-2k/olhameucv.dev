@@ -6,10 +6,15 @@
           ✨ CV Analyser
         </h1>
         <p class="text-sm font-light text-zinc-500 text-center">
-          Receba dicas e insights sobre o seu currículo de forma inteligente!
+          Receba feedbacks e dicas sobre o seu currículo de forma inteligente!
         </p>
       </div>
       <AppFileDropzone />
     </div>
   </ClientOnly>
+  <Toaster rich-colors />
 </template>
+
+<script setup lang="ts">
+import { Toaster } from "@/components/ui/sonner"
+</script>

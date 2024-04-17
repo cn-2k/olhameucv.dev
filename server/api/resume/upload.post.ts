@@ -94,7 +94,8 @@ Habilidades de comunicação e interpessoais: Avaliar a capacidade do candidato 
     const response = await openai.createCompletions(messages);
 
     return { response };
-  } catch (e) {
+  }
+  catch (e) {
     const error = e as Error;
 
     throw createError({
@@ -108,10 +109,11 @@ const lendoJson = async (namefilehash) => {
   try {
     const data = await fs.promises.readFile(
       `./server/upload/${namefilehash}.json`,
-      "utf8"
+      "utf8",
     );
     return extractData(JSON.parse(data));
-  } catch (error) {
+  }
+  catch (error) {
     console.error("Error reading JSON:", error);
     return null;
   }
@@ -144,10 +146,11 @@ const writeJson = async (pdfBuffer, namefilehash) => {
       try {
         await fs.promises.writeFile(
           `./server/upload/${namefilehash}.json`,
-          JSON.stringify(pdfData)
+          JSON.stringify(pdfData),
         );
         resolve(); // Resolve the promise when writing is successful
-      } catch (error) {
+      }
+      catch (error) {
         console.error("Error writing JSON:", error);
         reject(error); // Reject the promise with the error during writing
       }

@@ -12,20 +12,30 @@
   "dependencies": {
     "@vueuse/nuxt": "^10.9.0",
     "axios": "^1.6.8",
+    "class-variance-authority": "^0.7.0",
+    "clsx": "^2.1.0",
+    "lucide-vue-next": "^0.370.0",
     "nuxt": "^3.11.2",
     "nuxt-og-image": "^3.0.0-rc.52",
     "openai": "^4.36.0",
     "pdf-text": "^0.4.0",
     "pdf2json": "^3.0.5",
+    "radix-vue": "^1.7.0",
+    "shadcn-nuxt": "^0.10.2",
+    "tailwind-merge": "^2.2.2",
+    "tailwindcss-animate": "^1.0.7",
     "uuid": "^9.0.1",
     "vue": "^3.4.22",
-    "vue-router": "^4.3.0"
+    "vue-router": "^4.3.0",
+    "vue-sonner": "^1.1.2"
   },
   "devDependencies": {
     "@nuxt/eslint": "^0.3.7",
     "@nuxtjs/google-fonts": "^3.2.0",
-    "@nuxtjs/tailwindcss": "^6.11.4",
+    "@nuxtjs/tailwindcss": "^6.12.0",
     "@types/uuid": "^9.0.8",
-    "eslint": "^8.57.0"
+    "eslint": "^8.57.0",
+    "nuxt-lucide-icons": "^1.0.4",
+    "typescript": "^5.4.5"
   }
 }
