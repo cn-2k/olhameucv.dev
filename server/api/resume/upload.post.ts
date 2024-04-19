@@ -11,6 +11,14 @@ export default defineEventHandler(async (event) => {
   const form = await readMultipartFormData(event);
   const [file] = form ?? [];
 
+  const uploadDir = "./server/upload";
+
+  // Verifica se a pasta 'upload' existe
+  if (!fs.existsSync(uploadDir)) {
+  // Se não existir, cria a pasta
+    fs.mkdirSync(uploadDir, { recursive: true });
+  }
+
   if (!file) {
     throw createError({
       status: 400,
