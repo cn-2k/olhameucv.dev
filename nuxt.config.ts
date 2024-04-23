@@ -24,6 +24,8 @@ export default defineNuxtConfig({
     "@vueuse/nuxt",
     "@nuxtjs/google-fonts",
     "nuxt-og-image",
+    "shadcn-nuxt",
+    "nuxt-lucide-icons",
   ],
 
   eslint: {
@@ -41,5 +43,16 @@ export default defineNuxtConfig({
     families: {
       Inter: [300, 500, 800],
     },
+  },
+  shadcn: {
+    /**
+     * Prefix for all the imported component
+     */
+    prefix: "",
+    /**
+     * Directory that the component lives in.
+     * @default "./components/ui"
+     */
+    componentDir: "./components/ui",
   },
 });

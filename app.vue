@@ -1,4 +1,6 @@
 <script setup>
+import { Toaster } from "@/components/ui/sonner";
+
 const isPixPaid = ref(false);
 
 const gerarCorrelationIdUnico = (
@@ -20,10 +22,6 @@ const handleClickPix = () => {
     },
   ]);
 };
-
-const wooviStack = computed(() => {
-  return window.$openpix || [];
-});
 
 const currentCorrelationID = ref(null);
 
@@ -55,8 +53,7 @@ onMounted(() => {
       <div class="text-center flex flex-col gap-2 mb-4">
         <h1 class="text-4xl font-bold text-zinc-700">✨ CV Analyser</h1>
         <p class="text-sm font-light text-zinc-500 text-center">
-          Receba dicas e insights sobre o seu currículo de forma inteligente!
-          {{ wooviStack }}
+          Receba feedbacks e dicas sobre o seu currículo de forma inteligente!
         </p>
       </div>
       <AppFileDropzone v-if="isPixPaid" />
@@ -70,4 +67,5 @@ onMounted(() => {
       </div>
     </div>
   </ClientOnly>
+  <Toaster rich-colors />
 </template>
