@@ -24,4 +24,4 @@ logs
 !.env.example
 
 # Upload dir
-/server/upload/
+server/upload
