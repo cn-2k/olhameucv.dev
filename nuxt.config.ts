@@ -12,7 +12,6 @@ export default defineNuxtConfig({
     "@nuxt/eslint",
     "@vueuse/nuxt",
     "@nuxtjs/google-fonts",
-    "nuxt-og-image",
     "shadcn-nuxt",
     "nuxt-lucide-icons",
   ],

@@ -12,9 +12,9 @@
           </a>
         </header>
 
-        <section class="flex flex-col justify-between items-center gap-6 sm:gap-10 md:gap-16 lg:flex-row 2xl:mt-48">
+        <section class="flex flex-col justify-between items-center gap-6 lg:flex-row 2xl:mt-48">
           <!-- content - start -->
-          <div class="flex gap-4 flex-col justify-center sm:text-center lg:py-12 lg:text-left w-full lg:w-1/2 xl:w-[47%] xl:py-24">
+          <div class="flex gap-4 flex-col justify-center sm:text-center lg:py-12 lg:text-left w-full lg:w-1/2 xl:py-24">
             <h1 class="text-5xl tracking-tighter font-semibold text-zinc-600">
               Dê um <span class="text-yellow-400">boost</span> no seu currículo 🚀
             </h1>
@@ -39,21 +39,22 @@
           <!-- content - end -->
 
           <!-- component - start -->
-          <div class="relative lg:h-auto w-full lg:w-1/2 mt-36 lg:mt-0">
-            <img
-              src="./assets/images/cta.png"
-              class="w-48 lg:w-64 absolute -top-28 lg:-top-36"
-            >
-            <!-- <AppFileDropzone /> -->
+          <div
+            class="lg:h-auto mt-32 lg:mt-0"
+            :class="[parentShowFeedback ? 'w-full' : 'w-full lg:w-1/2']"
+          >
+            <AppFileDropzone @update:show-feedback="(value) => parentShowFeedback = value" />
           </div>
           <!-- component - end -->
         </section>
       </div>
     </div>
+    <Toaster rich-colors />
   </ClientOnly>
-  <Toaster rich-colors />
 </template>
 
 <script setup lang="ts">
 import { Toaster } from "@/components/ui/sonner"
+
+const parentShowFeedback = ref(false)
 </script>
