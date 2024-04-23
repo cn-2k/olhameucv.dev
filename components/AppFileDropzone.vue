@@ -2,7 +2,7 @@
   <div
     v-if="!showFeedback"
     ref="dropZoneRef"
-    class="relative w-4/5 max-w-screen-xl flex justify-center items-center border-2 border-gray-300 hover:border-blue-400 transition-colors duration-200 border-dashed h-72 rounded-lg"
+    class="relative w-full flex justify-center items-center border-2 border-gray-300 hover:border-blue-400 transition-colors duration-200 border-dashed h-72 rounded-lg"
     :class="{
       'border-green-400': isOverDropZone,
     }"

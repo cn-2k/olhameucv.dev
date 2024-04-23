@@ -30,7 +30,7 @@ export default defineNuxtConfig({
     fontsDir: "assets/fonts",
     overwriting: true,
     families: {
-      Inter: [300, 500, 800],
+      Inter: [300, 400, 500, 600, 800],
     },
   },
 
