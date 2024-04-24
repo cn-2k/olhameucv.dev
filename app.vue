@@ -8,7 +8,7 @@
             class="inline-flex items-center gap-2.5 text-xl text-zinc-700 font-semibold md:text-2xl"
             aria-label="logo"
           >
-            ✨ CV Analyser
+            <p>👀 olhameucv<span class="text-blue-700/70">.ai</span></p>
           </a>
         </header>
 
@@ -45,13 +45,6 @@
           >
             <AppFileDropzone @update:show-feedback="(value) => parentShowFeedback = value" />
           </div>
-          <!--
-          <button
-            class="bg-zinc-500 text-white px-4 py-2 rounded-md"
-            @click="handleClickPix"
-          >
-            Pagar com PIX
-          </button> -->
           <!-- component - end -->
         </section>
       </div>
@@ -64,47 +57,4 @@
 import { Toaster } from "@/components/ui/sonner"
 
 const parentShowFeedback = ref(false)
-const isPixPaid = ref(false)
-const currentCorrelationID = ref("")
-
-onMounted(() => {
-  window.$openpix = window.$openpix || []
-  window.$openpix.push(["config", { appID: import.meta.env.VITE_OPEN_PIX }])
-
-  const logEvents = (event) => {
-    console.log("logEvents:", event)
-
-    if (event.type === "PAYMENT_STATUS" && event.data.status === "COMPLETED") {
-      console.log("Correlation ID Data:", event.data)
-      console.log("Correlation ID", currentCorrelationID.value)
-      // aqui da pra saber o currenCorrelationID que foi feito e qual foi pago...
-
-      // podemos armazenar isso em uma lista no localstorage e depois fazer a verificação
-      // se o usuário já pagou ou não
-      isPixPaid.value = true
-    }
-  }
-
-  window.$openpix.addEventListener(logEvents)
-})
-
-const gerarCorrelationIdUnico = (
-  len: number,
-  chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789",
-) =>
-  [...Array(len)]
-    .map(() => chars.charAt(Math.floor(Math.random() * chars.length)))
-    .join("")
-
-const handleClickPix = () => {
-  currentCorrelationID.value = gerarCorrelationIdUnico(30)
-  window.$openpix.push([
-    "pix",
-    {
-      value: 1000,
-      correlationID: currentCorrelationID.value,
-      description: "Avaliação de currículo por especialista",
-    },
-  ])
-}
 </script>

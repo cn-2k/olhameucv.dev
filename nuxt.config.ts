@@ -6,7 +6,7 @@ export default defineNuxtConfig({
   },
   app: {
     head: {
-      title: "CV Analyser",
+      title: "olhameucv.ai",
       script: [
         {
           src: "https://plugin.openpix.com.br/v1/openpix.js",
