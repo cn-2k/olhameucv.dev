@@ -3,7 +3,7 @@
     <img
       v-if="!showFeedback"
       src="../assets/images/cta.png"
-      class="absolute -top-24 lg:-top-36 w-44 lg:w-64"
+      class="absolute -top-28 lg:-top-32 w-64 lg:w-72"
     >
     <UploadSection
       v-if="!showFeedback"

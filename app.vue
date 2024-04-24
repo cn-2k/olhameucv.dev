@@ -20,7 +20,7 @@
             </h1>
 
             <p class="mb-8 leading-relaxed text-zinc-600 md:mb-2 lg:w-full xl:text-lg">
-              Receba feedbacks e dicas sobre o seu currículo através de inteligência artificial, a análise é feita rapidamente e de forma inteligente, dê o primeiro passo para a sua carreira dos sonhos!
+              Obtenha uma avaliação personalizado sobre o seu currículo com o uso de inteligência artificial, a análise é feita rapidamente e de forma inteligente a partir do olhar criterioso de experientes recrutadores. Descubra oportunidades de melhoria e dicas para aumentar suas chances no mercado!
             </p>
 
             <blockquote class="text-sm text-end italic text-zinc-400 dark:text-white text-pretty">
