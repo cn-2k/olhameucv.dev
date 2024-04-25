@@ -14,7 +14,10 @@
 
         <section class="flex flex-col justify-between items-center gap-6 lg:flex-row 2xl:mt-48">
           <!-- content - start -->
-          <div class="flex gap-4 flex-col justify-center sm:text-center lg:py-12 lg:text-left w-full lg:w-1/2 xl:py-24">
+          <div
+            v-if="!parentShowFeedback"
+            class="flex gap-4 flex-col justify-center sm:text-center lg:py-12 lg:text-left w-full lg:w-1/2 xl:py-24"
+          >
             <h1 class="text-5xl tracking-tighter font-semibold text-zinc-600">
               Dê um <span class="text-yellow-400">boost</span> no seu currículo 🚀
             </h1>

@@ -22,6 +22,7 @@ export function useFileUpload(onSuccess: (data: any) => void) {
       })
 
       onSuccess(response.data)
+      console.log(response.data)
     }
     catch (error) {
       toast.error("Erro ao enviar o arquivo", {

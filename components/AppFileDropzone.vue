@@ -47,7 +47,6 @@ const { handleFile, isLoading } = useFileUpload((data) => {
   feedback.value = data
   setShowFeedback(true)
 })
-
 function setShowFeedback(value: boolean) {
   showFeedback.value = value
   emit("update:showFeedback", value)
