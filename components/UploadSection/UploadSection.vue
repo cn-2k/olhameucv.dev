@@ -6,27 +6,33 @@
       'border-green-400': isOverDropZone,
     }"
   >
-    <div v-if="!showFeedback && !isLoading">
-      <label class="cursor-pointer absolute top-0 left-0 right-0 bottom-0 block">
-        <input
-          id="file-upload"
-          accept=".pdf"
-          class="hidden"
-          type="file"
-          @change="onFileSelect"
-        />
+    <input
+      id="file-upload"
+      accept=".pdf"
+      class="hidden"
+      type="file"
+      :disabled="isLoading"
+      @change="onFileSelect"
+    />
+    <!-- hidden label  -->
+    <label
+      for="file-upload"
+      class="cursor-pointer absolute top-0 left-0 right-0 bottom-0 block"
+    />
+    <div
+      v-if="!showFeedback && !isLoading"
+      class="z-10 text-center flex flex-col gap-2"
+    >
+      <!-- label button -->
+      <label
+        for="file-upload"
+        class="text-white cursor-pointer bg-blue-600 hover:bg-blue-700 transition-colors font-bold tracking-wide rounded-md text-sm px-7 py-4"
+      >
+        Selecione o seu currículo (.pdf)
       </label>
-      <div class="z-50 text-center flex flex-col gap-2">
-        <label
-          for="file-upload"
-          class="text-white cursor-pointer bg-blue-600 hover:bg-blue-700 transition-colors font-bold tracking-wide rounded-md text-sm px-7 py-4"
-        >
-          Selecione o seu currículo (.pdf)
-        </label>
-        <p class="text-xs text-gray-400">
-          ou arraste e solte o arquivo pdf aqui
-        </p>
-      </div>
+      <p class="text-xs text-gray-400">
+        ou arraste e solte o arquivo pdf aqui
+      </p>
     </div>
     <div
       v-if="isLoading"
