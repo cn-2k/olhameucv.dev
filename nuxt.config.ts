@@ -1,22 +1,22 @@
 // https://nuxt.com/docs/api/configuration/nuxt-config
 export default defineNuxtConfig({
   devtools: { enabled: true },
+
   runtimeConfig: {
     OPEN_PIX: process.env.OPEN_PIX,
   },
+
   app: {
     head: {
       title: "olhameucv.ai",
       script: [
         {
           src: "https://plugin.openpix.com.br/v1/openpix.js",
-          body: true,
-          async: true,
-          defer: true,
         },
       ],
     },
   },
+
   css: ["@/assets/css/base.css"],
   modules: [
     "@nuxtjs/tailwindcss",
