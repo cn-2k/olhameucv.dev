@@ -1,4 +1,5 @@
 import { ref } from "vue"
+import { v4 as generateUUID } from "uuid"
 
 export function usePayment() {
   const isPixPaid = ref<boolean>(false)
@@ -33,7 +34,7 @@ export function usePayment() {
   }
 
   function startPayment() {
-    currentCorrelationID.value = crypto.randomUUID()
+    currentCorrelationID.value = generateUUID()
     window.$openpix.push([
       "pix",
       {
