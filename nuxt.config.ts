@@ -9,9 +9,15 @@ export default defineNuxtConfig({
   app: {
     head: {
       title: "olhameucv.ai",
+      link: [{
+        rel: "icon",
+        href: "/favicon.png",
+      }],
       script: [
         {
           src: "https://plugin.openpix.com.br/v1/openpix.js",
+          defer: true,
+          async: true,
         },
       ],
     },

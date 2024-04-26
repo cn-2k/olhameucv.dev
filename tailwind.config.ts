@@ -16,7 +16,7 @@ export default <Partial<Config>>{
         sans: ["Inter"],
       },
       backgroundImage: {
-        "hero-pattern": "url('~/public/images/bg.svg')",
+        "hero-pattern": "url('~/assets/images/bg.svg')",
       },
       screens: {
         "3xl": "1700px",

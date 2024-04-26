@@ -4,18 +4,10 @@ import { v4 as generateUUID } from "uuid"
 export function usePayment() {
   const isPixPaid = ref<boolean>(false)
   const currentCorrelationID = ref<string>("")
-
-  function openPixSetup() {
-    window.$openpix = window.$openpix || []
-    window.$openpix.push(["config", { appID: import.meta.env.VITE_OPEN_PIX }])
-  }
-
   function addPaymentListener() {
-    window.$openpix.addEventListener(handlePaymentStatus)
-  }
-
-  function removePaymentListener() {
-    window.$openpix.removeEventListener(handlePaymentStatus)
+    if (import.meta.client && window.$openpix.addEventListener) {
+      window.$openpix.addEventListener(handlePaymentStatus)
+    }
   }
 
   function handlePaymentStatus(event: OpenPixEvent) {
@@ -47,9 +39,7 @@ export function usePayment() {
 
   return {
     isPixPaid,
-    openPixSetup,
     addPaymentListener,
-    removePaymentListener,
     startPayment,
   }
 }

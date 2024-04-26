@@ -2,7 +2,7 @@
   <div class="relative w-full">
     <img
       v-if="!showFeedback"
-      src="../assets/images/cta.png"
+      src="~/assets/images/cta.svg"
       class="absolute -top-28 lg:-top-32 w-64 lg:w-72"
     >
     <UploadSection
@@ -26,12 +26,7 @@ import { useFileUpload } from "@/composables/useFileUpload"
 import type { FeedbackProps } from "@/entities/Feedback"
 
 onMounted(() => {
-  openPixSetup()
   addPaymentListener()
-})
-
-onUnmounted(() => {
-  removePaymentListener()
 })
 
 const emit = defineEmits<{
@@ -42,7 +37,7 @@ const showFeedback = ref<boolean>(false)
 const feedback = ref<FeedbackProps | null>(null)
 const selectedFile = ref<File | null>(null)
 
-const { openPixSetup, addPaymentListener, removePaymentListener, isPixPaid } = usePayment()
+const { addPaymentListener, isPixPaid } = usePayment()
 const { handleFile, isLoading } = useFileUpload((data) => {
   feedback.value = data
   setShowFeedback(true)
