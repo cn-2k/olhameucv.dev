@@ -5,8 +5,6 @@ import PDFParser from "pdf2json";
 import { openai } from "~/libs/openai/openai";
 import { NewPrompt } from "~/libs/openai/promptbuilder";
 
-const pdfParser = new PDFParser();
-
 export default defineEventHandler(async (event) => {
   const form = await readMultipartFormData(event);
   const [file] = form ?? [];
@@ -93,11 +91,7 @@ Habilidades de comunicação e interpessoais: Avaliar a capacidade do candidato 
     const messages = prompt.build();
     console.log("Prompt =>", JSON.stringify(messages, null, 2));
 
-    fs.unlink(`./server/upload/${namefilehash}.json`, (err) => {
-      if (err) {
-        console.error("Error deleting JSON:", err);
-      }
-    });
+    await fs.promises.unlink(`./server/upload/${namefilehash}.json`);
 
     const response = await openai.createCompletions(messages);
 
@@ -144,6 +138,8 @@ const extractData = (data) => {
 };
 
 const writeJson = async (pdfBuffer, namefilehash) => {
+  const pdfParser = new PDFParser();
+
   return new Promise((resolve, reject) => {
     pdfParser.on("pdfParser_dataError", (errData) => {
       console.error(errData.parserError);
