@@ -39,7 +39,7 @@
       class="text-sm text-center w-full text-zinc-600 items-center flex justify-center flex-col gap-4"
     >
       <LucideLoader class="animate-spin size-6" />
-      Analisando o currículo...
+      Processando as informações...
     </div>
   </div>
 </template>
@@ -48,17 +48,17 @@
 import { toast } from "vue-sonner"
 
 defineProps<{
-  showFeedback: boolean
   isLoading: boolean
+  showFeedback: boolean
 }>()
 
 const emit = defineEmits<{
   (event: "update:selectedFile", file: File | null): void
+  (event: "handleFile", file: any): void
 }>()
 
 const dropZoneRef = ref<HTMLElement>()
 const { isOverDropZone } = useDropZone(dropZoneRef, onDrop)
-const { startPayment } = usePayment()
 
 function onFileSelect(e: Event) {
   const input = e.target as HTMLInputElement
@@ -75,7 +75,7 @@ function onFileSelect(e: Event) {
 
   if (file && file.type === "application/pdf") {
     emit("update:selectedFile", file)
-    startPayment()
+    emit("handleFile", file)
   }
 
   input.value = ""
@@ -93,7 +93,7 @@ function onDrop(file: File[] | null) {
 
   if (file && file[0].type === "application/pdf") {
     emit("update:selectedFile", file[0])
-    startPayment()
+    emit("handleFile", file[0])
   }
 }
 </script>

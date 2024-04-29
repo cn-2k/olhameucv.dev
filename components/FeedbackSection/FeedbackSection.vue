@@ -82,7 +82,6 @@
 import type { FeedbackProps } from "@/entities/Feedback"
 
 defineProps<{
-  showFeedback: boolean
   feedback: FeedbackProps | null
 }>()
 

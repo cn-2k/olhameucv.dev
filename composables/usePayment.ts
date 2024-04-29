@@ -4,26 +4,6 @@ import { v4 as generateUUID } from "uuid"
 export function usePayment() {
   const isPixPaid = ref<boolean>(false)
   const currentCorrelationID = ref<string>("")
-  function addPaymentListener() {
-    if (import.meta.client && window.$openpix.addEventListener) {
-      window.$openpix.addEventListener(handlePaymentStatus)
-    }
-  }
-
-  function handlePaymentStatus(event: OpenPixEvent) {
-    console.log("logEvents:", event)
-
-    if (event.type === "PAYMENT_STATUS" && event.data.status === "COMPLETED") {
-      console.log("Correlation ID Data:", event.data)
-      console.log("Correlation ID", currentCorrelationID.value)
-
-      isPixPaid.value = true
-    }
-
-    if (event.type === "ON_CLOSE" && isPixPaid.value) {
-      isPixPaid.value = false
-    }
-  }
 
   function startPayment() {
     currentCorrelationID.value = generateUUID()
@@ -35,11 +15,44 @@ export function usePayment() {
         description: "Avaliação de currículo por especialista",
       },
     ])
+
+    const logEvents = (e: OpenPixEvent) => {
+      if (e.type === "PAYMENT_STATUS" && e.data.status === "COMPLETED") {
+        console.log("Correlation ID Data:", e.data)
+        console.log("Correlation ID", currentCorrelationID.value)
+
+        isPixPaid.value = true
+      }
+
+      if (e.type === "CHARGE_EXPIRED") {
+        console.log("a cobrança foi expirada")
+      }
+
+      if (e.type === "ON_CLOSE") {
+        console.log("o modal da cobrança foi fechado")
+      }
+
+      if (e.type === "ON_CLOSE" && !isPixPaid.value) {
+        console.log("o modal da cobrança foi fechado e o user não pagou")
+        isPixPaid.value = false
+      }
+
+      if (e.type === "ON_CLOSE" && isPixPaid.value) {
+        isPixPaid.value = false
+      }
+
+      if (e.type === "ON_ERROR") {
+        console.log("ocorreu um erro")
+      }
+    }
+
+    if (import.meta.client && window.$openpix.addEventListener) {
+      window.$openpix.addEventListener(logEvents)
+    }
   }
 
   return {
     isPixPaid,
-    addPaymentListener,
     startPayment,
   }
 }

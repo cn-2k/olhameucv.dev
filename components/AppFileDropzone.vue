@@ -2,57 +2,40 @@
   <div class="relative w-full">
     <img
       v-if="!showFeedback"
+      draggable="false"
       src="~/assets/images/cta.svg"
-      class="absolute -top-28 lg:-top-32 w-64 lg:w-72"
+      class="absolute -top-28 lg:-top-32 w-64 lg:w-72 select-none"
     >
     <UploadSection
       v-if="!showFeedback"
-      :is-loading="isLoading"
       :show-feedback="showFeedback"
+      :is-loading="isLoading"
       @update:selected-file="selectedFile = $event"
+      @handle-file="handleFile"
     />
     <FeedbackSection
       v-if="showFeedback"
       :feedback="feedback"
-      :show-feedback="showFeedback"
-      @close-feedback="setShowFeedback(false)"
+      @close-feedback="showFeedback = false"
     />
   </div>
 </template>
 
 <script setup lang="ts">
-import { usePayment } from "@/composables/usePayment"
 import { useFileUpload } from "@/composables/useFileUpload"
-import type { FeedbackProps } from "@/entities/Feedback"
-
-onMounted(() => {
-  addPaymentListener()
-})
 
 const emit = defineEmits<{
   (e: "update:showFeedback", value: boolean): boolean
 }>()
 
-const showFeedback = ref<boolean>(false)
-const feedback = ref<FeedbackProps | null>(null)
 const selectedFile = ref<File | null>(null)
 
-const { addPaymentListener, isPixPaid } = usePayment()
-const { handleFile, isLoading } = useFileUpload((data) => {
-  feedback.value = data
-  setShowFeedback(true)
-})
-function setShowFeedback(value: boolean) {
-  showFeedback.value = value
-  emit("update:showFeedback", value)
-}
+const { showFeedback, feedback, handleFile, isLoading } = useFileUpload()
 
 watch(
-  () => isPixPaid.value,
+  () => showFeedback.value,
   () => {
-    if (isPixPaid.value) {
-      handleFile(selectedFile.value)
-    }
+    emit("update:showFeedback", showFeedback.value)
   },
 )
 </script>
