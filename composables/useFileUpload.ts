@@ -1,18 +1,14 @@
-// useFileUpload.ts
-import { ref, onUnmounted } from "vue"
 import axios from "axios"
 import { toast } from "vue-sonner"
 import { v4 as generateUUID } from "uuid"
-import type { FeedbackProps } from "@/entities/Feedback"
+import { useStorage } from "@vueuse/core"
 
 export function useFileUpload() {
   const isLoading = ref<boolean>(false)
-  const showFeedback = ref<boolean>(false)
-  const feedback = ref<FeedbackProps | null>(null)
-  const isPixPaid = ref<boolean>(false)
+  const showFeedback = useStorage("showFeedback", false)
+  const feedback = useStorage("feedback", "")
+  const isPixPaid = useStorage<boolean>("isPixPaid", false)
   const currentCorrelationID = ref<string>("")
-
-  let stopWatchEffect: () => void
 
   async function handleFile(file: File | null) {
     if (!file) return
@@ -31,10 +27,9 @@ export function useFileUpload() {
 
       startPayment()
 
-      // TODO: Stop this watch
       watchEffect(() => {
         if (isPixPaid.value) {
-          feedback.value = response.data
+          feedback.value = JSON.stringify(response.data)
           showFeedback.value = true
           isLoading.value = false
         }
@@ -98,6 +93,7 @@ export function useFileUpload() {
     handleFile,
     feedback,
     isLoading,
+    isPixPaid,
     showFeedback,
   }
 }

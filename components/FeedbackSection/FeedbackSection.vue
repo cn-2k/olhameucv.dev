@@ -18,7 +18,7 @@
         🎉 Que bacana! Seu currículo <span class="text-green-500">foi analisado</span>, verifique o resultado abaixo:
       </p>
       <div
-        v-if="feedback"
+        v-if="feedbackResponse"
         class="flex flex-col lg:flex-row gap-8 mt-4"
       >
         <div
@@ -36,7 +36,7 @@
             /></svg> Visão geral
           </h2>
           <p class="text-justify text-base tracking-tight text-zinc-800">
-            {{ feedback.response.experiences }}
+            {{ feedbackResponse.response.experiences }}
           </p>
         </div>
         <div class="space-y-2">
@@ -52,7 +52,7 @@
             /></svg> Feedback
           </h2>
           <p class="text-justify text-base tracking-tight text-zinc-800">
-            {{ feedback.response.suggestions }}
+            {{ feedbackResponse.response.suggestions }}
           </p>
         </div>
       </div>
@@ -81,13 +81,15 @@
 <script lang="ts" setup>
 import type { FeedbackProps } from "@/entities/Feedback"
 
-defineProps<{
-  feedback: FeedbackProps | null
+const props = defineProps<{
+  feedback: string
 }>()
 
 const emit = defineEmits<{
   (e: "close-feedback"): void
 }>()
+
+const feedbackResponse: FeedbackProps | null = JSON.parse(String(props.feedback))
 
 function handleCloseFeedback() {
   emit("close-feedback")

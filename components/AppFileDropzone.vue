@@ -30,12 +30,17 @@ const emit = defineEmits<{
 
 const selectedFile = ref<File | null>(null)
 
-const { showFeedback, feedback, handleFile, isLoading } = useFileUpload()
+const { showFeedback, feedback, handleFile, isLoading, isPixPaid } = useFileUpload()
 
 watch(
   () => showFeedback.value,
   () => {
     emit("update:showFeedback", showFeedback.value)
-  },
+    if (showFeedback.value === false) {
+      isPixPaid.value = false,
+      isLoading.value = false,
+      feedback.value = ""
+    }
+  }, { immediate: true },
 )
 </script>
