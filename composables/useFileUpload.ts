@@ -39,6 +39,8 @@ export function useFileUpload() {
       toast.error("Erro ao enviar o arquivo", {
         description: error || "Ocorreu um erro desconhecido.",
       })
+
+      isLoading.value = false
     }
   }
 

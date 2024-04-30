@@ -15,7 +15,7 @@
         d="m10.6 13.8l-2.15-2.15q-.275-.275-.7-.275t-.7.275t-.275.7t.275.7L9.9 15.9q.3.3.7.3t.7-.3l5.65-5.65q.275-.275.275-.7t-.275-.7t-.7-.275t-.7.275zM12 22q-2.075 0-3.9-.788t-3.175-2.137T2.788 15.9T2 12t.788-3.9t2.137-3.175T8.1 2.788T12 2t3.9.788t3.175 2.137T21.213 8.1T22 12t-.788 3.9t-2.137 3.175t-3.175 2.138T12 22m0-2q3.35 0 5.675-2.325T20 12t-2.325-5.675T12 4T6.325 6.325T4 12t2.325 5.675T12 20m0-8"
       /></svg>
       <p class="text-lg font-bold text-zinc-600">
-        🎉 Que bacana! Seu currículo <span class="text-green-500">foi analisado</span>, verifique o resultado abaixo:
+        🎉 Que bacana! O Seu currículo <span class="text-green-500">foi analisado</span>, verifique o resultado que <strong class="text-green-500">enviamos no seu e-mail</strong> ou por aqui mesmo:
       </p>
       <div
         v-if="feedbackResponse"
@@ -59,12 +59,40 @@
     </div>
     <div class="flex justify-end mt-10 text-zinc-800">
       <div class="flex flex-col gap-2">
-        <Button
-          size="sm"
-          variant="outline"
-        >
-          <LucideMail class="size-4 mr-2" /> Enviar análise por e-mail
-        </Button>
+        <Popover>
+          <PopoverTrigger as-child>
+            <Button
+              size="sm"
+              variant="outline"
+            >
+              <LucideMail class="size-4 mr-2" /> Alterar ou reenviar e-mail
+            </Button>
+          </PopoverTrigger>
+          <PopoverContent class="w-full">
+            <div class="flex flex-col gap-4">
+              <div class="space-y-2">
+                <h4 class="font-medium leading-none">
+                  Alterar ou reenviar e-mail
+                </h4>
+                <p class="text-sm text-muted-foreground">
+                  Iremos reenviar a sua análise!
+                </p>
+              </div>
+              <div class="flex w-full max-w-sm items-center gap-1.5">
+                <Input
+                  id="email"
+                  v-model="feedbackResponseEmail"
+                  type="email"
+                  placeholder="Email"
+                  required
+                />
+                <Button>
+                  Reenviar
+                </Button>
+              </div>
+            </div>
+          </PopoverContent>
+        </Popover>
         <Button
           variant="outline"
           size="sm"
@@ -79,6 +107,13 @@
 </template>
 
 <script lang="ts" setup>
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from "@/components/ui/popover"
+import { Input } from "@/components/ui/input"
+
 import type { FeedbackProps } from "@/entities/Feedback"
 
 const props = defineProps<{
@@ -90,6 +125,7 @@ const emit = defineEmits<{
 }>()
 
 const feedbackResponse: FeedbackProps | null = JSON.parse(String(props.feedback))
+const feedbackResponseEmail = ref(feedbackResponse?.response?.email)
 
 function handleCloseFeedback() {
   emit("close-feedback")
