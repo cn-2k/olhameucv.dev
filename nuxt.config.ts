@@ -4,6 +4,10 @@ export default defineNuxtConfig({
 
   runtimeConfig: {
     OPEN_PIX: process.env.OPEN_PIX,
+    turso: {
+      dbUrl: "",
+      dbAuthToken: "",
+    },
   },
 
   app: {
