@@ -89,13 +89,29 @@ Habilidades de comunicação e interpessoais: Avaliar a capacidade do candidato 
     });
 
     const messages = prompt.build();
-    console.log("Prompt =>", JSON.stringify(messages, null, 2));
+    // console.log("Prompt =>", JSON.stringify(messages, null, 2));
 
     await fs.promises.unlink(`./server/upload/${namefilehash}.json`);
 
-    const response = await openai.createCompletions(messages);
+    const emailPattern = /[\w.-]+@[\w.-]+\.\w+/;
+    const emailMatch = resume.match(emailPattern);
 
-    return { response };
+    console.log(emailMatch[0]);
+
+    if (emailMatch) {
+      const client = useTurso()
+
+      await client.execute({
+        sql: "insert into usuarios(email) values(?)",
+        args: [
+          emailMatch[0],
+        ],
+      });
+    }
+
+    // const response = await openai.createCompletions(messages);
+
+    // return { response };
   }
   catch (e) {
     const error = e as Error;

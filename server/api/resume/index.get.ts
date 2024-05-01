@@ -1,3 +1,10 @@
 export default defineEventHandler(async (event) => {
-  return "Hello Nitro";
-});
+  const client = useTurso(event)
+  const { rows } = await client.execute("select * from usuarios")
+
+  return {
+    data: {
+      items: rows,
+    },
+  }
+})
