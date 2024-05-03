@@ -1,51 +1,40 @@
 import axios from "axios"
 import { toast } from "vue-sonner"
 import { v4 as generateUUID } from "uuid"
+import { ref } from "vue"
 import { useStorage } from "@vueuse/core"
 
 export function useFileUpload() {
-  const isLoading = ref<boolean>(false)
+  const isProcessingFile = ref(false)
+  const isConfirmingPayment = ref(false)
   const showFeedback = useStorage("showFeedback", false)
   const feedback = useStorage("feedback", "")
-  const isPixPaid = useStorage<boolean>("isPixPaid", false)
-  const currentCorrelationID = ref<string>("")
+  const isPixPaid = useStorage("isPixPaid", false)
+  const currentCorrelationID = ref("")
+  const processId = ref("")
 
-  async function handleFile(file: File | null) {
-    if (!file) return
-
-    isLoading.value = true
+  async function handleFile(file: File) {
+    isProcessingFile.value = true
 
     const formData = new FormData()
     formData.append("file", file)
 
     try {
-      const response = await axios.post("/api/resume/upload", formData, {
-        headers: {
-          "Content-Type": "multipart/form-data",
-        },
+      const { data } = await axios.post("/api/resume/upload", formData, {
+        headers: { "Content-Type": "multipart/form-data" },
       })
 
-      startPayment()
-
-      watchEffect(() => {
-        if (isPixPaid.value) {
-          feedback.value = JSON.stringify(response.data)
-          showFeedback.value = true
-          isLoading.value = false
-        }
-      })
+      processId.value = data.processId
+      isProcessingFile.value = false
     }
     catch (error) {
-      toast.error("Erro ao enviar o arquivo", {
-        description: error || "Ocorreu um erro desconhecido.",
-      })
-
-      isLoading.value = false
+      handleUploadError(error)
     }
   }
 
-  function startPayment() {
+  function starPayment() {
     currentCorrelationID.value = generateUUID()
+
     window.$openpix.push([
       "pix",
       {
@@ -55,47 +44,67 @@ export function useFileUpload() {
       },
     ])
 
-    const logEvents = (e: OpenPixEvent) => {
-      if (e.type === "PAYMENT_STATUS" && e.data.status === "COMPLETED") {
-        console.log("Correlation ID Data:", e.data)
-        console.log("Correlation ID", currentCorrelationID.value)
+    console.log("Correlation ID", currentCorrelationID.value)
+    console.log("Process ID", processId.value)
 
-        isPixPaid.value = true
-      }
+    setupPaymentListeners(processId.value)
+  }
 
-      if (e.type === "CHARGE_EXPIRED") {
-        console.log("a cobrança foi expirada")
-      }
-
-      if (e.type === "ON_CLOSE") {
-        console.log("o modal da cobrança foi fechado")
-      }
-
-      if (e.type === "ON_CLOSE" && !isPixPaid.value) {
-        console.log("o modal da cobrança foi fechado e o user não pagou")
-        showFeedback.value = false
-        isLoading.value = false
-      }
-
-      // if (e.type === "ON_CLOSE" && isPixPaid.value) {
-      //   isPixPaid.value = false
-      // }
-
-      if (e.type === "ON_ERROR") {
-        console.log("ocorreu um erro")
+  function setupPaymentListeners(processId: string) {
+    const handlePaymentStatus = async (event: OpenPixEvent) => {
+      switch (event.type) {
+        case "PAYMENT_STATUS":
+          if (event.data.status === "COMPLETED") {
+            await confirmPayment(processId)
+          }
+          break
+        case "CHARGE_EXPIRED":
+          console.log("A cobrança expirou.")
+          break
+        case "ON_CLOSE":
+          if (isConfirmingPayment.value) {
+            return
+          }
+          isConfirmingPayment.value = false
+          isProcessingFile.value = false
+          break
+        case "ON_ERROR":
+          console.log("Ocorreu um erro com o pagamento.")
+          break
       }
     }
 
     if (import.meta.client && window.$openpix.addEventListener) {
-      window.$openpix.addEventListener(logEvents)
+      window.$openpix.addEventListener(handlePaymentStatus)
     }
+  }
+
+  async function confirmPayment(processId: string) {
+    try {
+      isConfirmingPayment.value = true
+      isPixPaid.value = true
+      const { data } = await axios.post("/api/payment/confirm", { processId, correlationId: currentCorrelationID.value })
+      feedback.value = JSON.stringify(data)
+      showFeedback.value = true
+      isConfirmingPayment.value = false
+    }
+    catch (error) {
+      console.error("Erro ao confirmar pagamento:", error)
+    }
+  }
+
+  function handleUploadError(error: unknown) {
+    const errorMessage = error instanceof Error ? error.message : "Ocorreu um erro desconhecido."
+    toast.error("Erro ao enviar o arquivo", { description: errorMessage })
   }
 
   return {
     handleFile,
     feedback,
-    isLoading,
+    isProcessingFile,
+    isConfirmingPayment,
     isPixPaid,
     showFeedback,
+    starPayment,
   }
 }

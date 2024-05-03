@@ -11,7 +11,7 @@
       accept=".pdf"
       class="hidden"
       type="file"
-      :disabled="isLoading"
+      :disabled="isLoading || wantsToPay"
       @change="onFileSelect"
     />
     <!-- hidden label  -->
@@ -20,7 +20,7 @@
       class="cursor-pointer absolute top-0 left-0 right-0 bottom-0 block"
     />
     <div
-      v-if="!showFeedback && !isLoading"
+      v-if="!showFeedback && !wantsToPay && !isLoading"
       class="z-10 text-center flex flex-col gap-2"
     >
       <!-- label button -->
@@ -35,11 +35,39 @@
       </p>
     </div>
     <div
+      v-if="wantsToPay && !showFeedback && !isLoading"
+      class="z-10 flex flex-col gap-2 overflow-hidden"
+    >
+      <div>
+        <p class="text-green-500 tracking-tight text-center font-semibold text-lg">
+          Arquivo processado com sucesso!
+        </p>
+      </div>
+      <div class="flex flex-col lg:flex-row gap-2 mx-3">
+        <Button
+          size="sm"
+          variant="default"
+          class="flex gap-2 bg-green-600 font-semibold hover:bg-green-700"
+          @click="emit('startPayment')"
+        >
+          <LucideWalletMinimal class="size-4" /> Continuar para o pagamento
+        </Button>
+        <Button
+          size="sm"
+          variant="default"
+          class="flex gap-2 bg-blue-700 font-semibold hover:bg-blue-800"
+          @click="wantsToPay = false"
+        >
+          Voltar
+        </Button>
+      </div>
+    </div>
+    <div
       v-if="isLoading"
       class="text-sm text-center w-full text-zinc-600 items-center flex justify-center flex-col gap-4"
     >
       <LucideLoader class="animate-spin size-6" />
-      Processando as informações...
+      {{ isProcessingFile ? "Processando o arquivo..." : "Estamos analisando, só um momento..." }}
     </div>
   </div>
 </template>
@@ -47,18 +75,23 @@
 <script lang="ts" setup>
 import { toast } from "vue-sonner"
 
-defineProps<{
-  isLoading: boolean
+const props = defineProps<{
+  isProcessingFile: boolean
+  isConfirmingPayment: boolean
   showFeedback: boolean
 }>()
 
 const emit = defineEmits<{
   (event: "update:selectedFile", file: File | null): void
   (event: "handleFile", file: any): void
+  (event: "startPayment"): void
 }>()
 
 const dropZoneRef = ref<HTMLElement>()
 const { isOverDropZone } = useDropZone(dropZoneRef, onDrop)
+const wantsToPay = ref(false)
+
+const isLoading = computed(() => props.isProcessingFile || props.isConfirmingPayment)
 
 function onFileSelect(e: Event) {
   const input = e.target as HTMLInputElement
@@ -76,6 +109,7 @@ function onFileSelect(e: Event) {
   if (file && file.type === "application/pdf") {
     emit("update:selectedFile", file)
     emit("handleFile", file)
+    wantsToPay.value = true
   }
 
   input.value = ""
@@ -94,6 +128,7 @@ function onDrop(file: File[] | null) {
   if (file && file[0].type === "application/pdf") {
     emit("update:selectedFile", file[0])
     emit("handleFile", file[0])
+    wantsToPay.value = true
   }
 }
 </script>

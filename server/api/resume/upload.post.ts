@@ -1,181 +1,112 @@
-/* eslint-disable @stylistic/semi */
-import fs from "fs";
-import { v4 as uuidv4 } from "uuid";
-import PDFParser from "pdf2json";
-import { openai } from "~/libs/openai/openai";
-import { NewPrompt } from "~/libs/openai/promptbuilder";
+import fs from "fs"
+import { v4 as uuidv4 } from "uuid"
+import PDFParser from "pdf2json"
+
+interface PDFData {
+  Pages: Array<{
+    Texts: Array<{
+      R: Array<{
+        T: string
+      }>
+    }>
+  }>
+}
+
+const uploadDirectory = "./server/upload"
 
 export default defineEventHandler(async (event) => {
-  const form = await readMultipartFormData(event);
-  const [file] = form ?? [];
+  const form = await readMultipartFormData(event)
+  const [file] = form ?? []
 
-  const uploadDir = "./server/upload";
-
-  // Verifica se a pasta 'upload' existe
-  if (!fs.existsSync(uploadDir)) {
-  // Se não existir, cria a pasta
-    fs.mkdirSync(uploadDir, { recursive: true });
+  if (!fs.existsSync(uploadDirectory)) {
+    fs.mkdirSync(uploadDirectory, { recursive: true })
   }
 
   if (!file) {
     throw createError({
-      status: 400,
-      statusMessage: "file required",
-    });
+      statusCode: 400,
+      statusMessage: "File is required.",
+    })
   }
 
-  const pdfBuffer = file.data;
+  const pdfBuffer = file.data
 
   try {
-    const namefilehash = uuidv4();
-    await writeJson(pdfBuffer, namefilehash);
-    const resume = await lendoJson(namefilehash);
+    const fileHash = uuidv4()
+    const processId = uuidv4()
+    const client = useTurso()
+    await writePDFDataToJson(pdfBuffer, fileHash)
+    const resumeText = await readJsonAsText(fileHash)
 
-    const prompt = NewPrompt();
-    prompt.withPersona(`
-    The text you provided is already in English. Here's the translation to Portuguese in case that's what you meant:
+    await fs.promises.unlink(`${uploadDirectory}/${fileHash}.json`)
 
-Persona do Recrutador: Especialista Experiente em Recrutamento de Engenheiros de Software
-
-Objetivo: Avaliar a adequação de um candidato para cargos de engenheiro de software com base no resumo do seu currículo.
-
-Pontos-chave a serem considerados:
-
-Histórico profissional:
-
-Foco em resultados e impacto: Priorizar as realizações do candidato e o impacto tangível que ele causou em cada função.
-Considerar o tipo de empresa: Avaliar a relevância das empresas em que o candidato trabalhou, incluindo startups, grandes empresas de tecnologia e agências.
-Avaliar expertise em tecnologia: Identificar as tecnologias mencionadas e avaliar o nível de proficiência do candidato e os anos de experiência com cada uma.
-Educação e certificações:
-
-Dar menos peso à educação: Embora a educação possa fornecer contexto, geralmente é menos significativa para funções de engenheiro de software.
-Não confiar apenas em credenciais: Não baseie decisões apenas em diplomas, certificações ou cursos online.
-Presença online:
-
-LinkedIn como fonte primária: Use o LinkedIn como a plataforma principal para entender o perfil profissional do candidato.
-Considere GitHub, sites pessoais e blogs: Embora não sejam essenciais, essas plataformas podem fornecer informações adicionais.
-Valorizar o envolvimento da comunidade: A participação positiva em comunidades online pode ser um indicador valioso.
-Detalhes do resumo do currículo:
-
-Revisão completa do histórico de trabalho: Comece examinando cuidadosamente o histórico profissional do candidato.
-Use descrições de experiência para perguntas direcionadas: Utilize as descrições de experiências passadas para formular perguntas de entrevista relevantes.
-Dese enfocar a posse: Não priorize o tempo gasto em cada empresa; concentre-se na qualidade de suas contribuições.
-Considerações adicionais:
-
-Alinhamento de habilidades técnicas: Avaliar se as habilidades técnicas do candidato estão alinhadas com os requisitos específicos da posição em aberto.
-Ajuste cultural: Avaliar o ajuste cultural do candidato com o ambiente de trabalho e os valores da empresa.
-Habilidades de comunicação e interpessoais: Avaliar a capacidade do candidato de se comunicar de forma eficaz e colaborar com os outros.
-    `);
-
-    prompt.withContext(resume);
-
-    prompt.withContext(`
-      ## Context & Data:
-      ${resume}
-      -separe o email do canditado e coloque na chave da response email
-      -separe sua avaliação do candidato e coloque sua visão com base na sua visao de recrutador e coloque em feedback
-      -separe suas sugestões para melhorar o curriculo do candidato e coloque em suggestions
-    `);
-
-    prompt.withResponseType({
-      experiences: "",
-      bio: "",
-      name: "",
-      technologies: "",
-      linkedinUrl: "",
-      email: "",
-      feedback: "",
-      suggestions: "",
-    });
-
-    const messages = prompt.build();
-    // console.log("Prompt =>", JSON.stringify(messages, null, 2));
-
-    await fs.promises.unlink(`./server/upload/${namefilehash}.json`);
-
-    const emailPattern = /[\w.-]+@[\w.-]+\.\w+/;
-    const emailMatch = resume.match(emailPattern);
-
-    console.log(emailMatch[0]);
+    const emailRegex = /[\w.-]+@[\w.-]+\.\w+/
+    const emailMatch = resumeText?.match(emailRegex)
 
     if (emailMatch) {
-      const client = useTurso()
-
       await client.execute({
-        sql: "insert into usuarios(email) values(?)",
+        sql: "INSERT INTO usuarios (process_id, email, resume, is_paid) VALUES (?, ?, ?, ?)",
         args: [
+          processId,
           emailMatch[0],
+          resumeText,
+          false,
         ],
-      });
+      })
     }
 
-    // const response = await openai.createCompletions(messages);
-
-    // return { response };
-  }
-  catch (e) {
-    const error = e as Error;
-
-    throw createError({
-      status: 500,
-      statusMessage: error.message,
-    });
-  }
-});
-
-const lendoJson = async (namefilehash) => {
-  try {
-    const data = await fs.promises.readFile(
-      `./server/upload/${namefilehash}.json`,
-      "utf8",
-    );
-    return extractData(JSON.parse(data));
+    return { processId }
   }
   catch (error) {
-    console.error("Error reading JSON:", error);
-    return null;
+    const err = error as Error
+    throw createError({
+      statusCode: 500,
+      statusMessage: err.message,
+    })
   }
-};
+})
 
-const extractData = (data) => {
-  const totalPages = data.Pages.length;
-  let textTotal = "";
-
-  for (let i = 0; i < totalPages; i++) {
-    const text = data.Pages[i].Texts;
-    const textArray = text.map((item) => {
-      return decodeURIComponent(item.R[0].T);
-    });
-
-    textTotal += textArray.join(" ");
+const readJsonAsText = async (fileHash: string): Promise<string | null> => {
+  try {
+    const data = await fs.promises.readFile(`${uploadDirectory}/${fileHash}.json`, "utf8")
+    return extractTextFromPDFData(JSON.parse(data))
   }
+  catch (error) {
+    console.error("Error reading JSON:", error)
+    return null
+  }
+}
 
-  return textTotal;
-};
+const extractTextFromPDFData = (pdfData: PDFData): string => {
+  return pdfData.Pages.reduce((accumulatedText, page) => {
+    const pageText = page.Texts.map(item => decodeURIComponent(item.R[0].T)).join(" ")
+    return accumulatedText + pageText + " "
+  }, "").trim()
+}
 
-const writeJson = async (pdfBuffer, namefilehash) => {
-  const pdfParser = new PDFParser();
+const writePDFDataToJson = async (pdfBuffer: Buffer, fileHash: string): Promise<void> => {
+  const pdfParser = new PDFParser()
 
   return new Promise((resolve, reject) => {
     pdfParser.on("pdfParser_dataError", (errData) => {
-      console.error(errData.parserError);
-      reject(errData.parserError); // Reject the promise with the error
-    });
+      console.error(errData)
+      reject(errData)
+    })
 
     pdfParser.on("pdfParser_dataReady", async (pdfData) => {
       try {
         await fs.promises.writeFile(
-          `./server/upload/${namefilehash}.json`,
+          `${uploadDirectory}/${fileHash}.json`,
           JSON.stringify(pdfData),
-        );
-        resolve(); // Resolve the promise when writing is successful
+        )
+        resolve()
       }
       catch (error) {
-        console.error("Error writing JSON:", error);
-        reject(error); // Reject the promise with the error during writing
+        console.error("Error writing JSON:", error)
+        reject(error)
       }
-    });
+    })
 
-    pdfParser.parseBuffer(pdfBuffer);
-  });
-};
+    pdfParser.parseBuffer(pdfBuffer)
+  })
+}
