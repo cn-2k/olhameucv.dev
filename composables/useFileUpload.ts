@@ -47,15 +47,15 @@ export function useFileUpload() {
     console.log("Correlation ID", currentCorrelationID.value)
     console.log("Process ID", processId.value)
 
-    setupPaymentListeners(processId.value)
+    setupPaymentListeners(processId.value, currentCorrelationID.value)
   }
 
-  function setupPaymentListeners(processId: string) {
+  function setupPaymentListeners(processId: string, correlationId: string) {
     const handlePaymentStatus = async (event: OpenPixEvent) => {
       switch (event.type) {
         case "PAYMENT_STATUS":
           if (event.data.status === "COMPLETED") {
-            await confirmPayment(processId)
+            await confirmPayment(processId, correlationId)
           }
           break
         case "CHARGE_EXPIRED":
@@ -79,11 +79,11 @@ export function useFileUpload() {
     }
   }
 
-  async function confirmPayment(processId: string) {
+  async function confirmPayment(processId: string, correlationId: string) {
     try {
       isConfirmingPayment.value = true
       isPixPaid.value = true
-      const { data } = await axios.post("/api/payment/confirm", { processId, correlationId: currentCorrelationID.value })
+      const { data } = await axios.post("/api/payment/confirm", { processId, correlationId })
       feedback.value = JSON.stringify(data)
       showFeedback.value = true
       isConfirmingPayment.value = false
