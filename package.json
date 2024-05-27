@@ -10,15 +10,15 @@
     "postinstall": "nuxt prepare"
   },
   "dependencies": {
+    "@libsql/client": "^0.5.6",
+    "@vueuse/core": "^10.9.0",
     "@vueuse/nuxt": "^10.9.0",
     "axios": "^1.6.8",
     "class-variance-authority": "^0.7.0",
     "clsx": "^2.1.0",
     "lucide-vue-next": "^0.370.0",
     "nuxt": "^3.11.2",
-    "nuxt-og-image": "^3.0.0-rc.52",
     "openai": "^4.36.0",
-    "pdf-text": "^0.4.0",
     "pdf2json": "^3.0.5",
     "radix-vue": "^1.7.0",
     "shadcn-nuxt": "^0.10.2",

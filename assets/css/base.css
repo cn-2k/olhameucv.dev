@@ -3,5 +3,6 @@
 @tailwind utilities;
 
 body {
-  @apply bg-zinc-100/50
+  @apply bg-hero-pattern bg-cover bg-no-repeat;
 }
+

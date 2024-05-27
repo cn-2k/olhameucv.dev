@@ -4,26 +4,40 @@ export default defineNuxtConfig({
     OPEN_PIX: process.env.OPEN_PIX,
   },
   devtools: { enabled: true },
+
+  runtimeConfig: {
+    OPEN_PIX: process.env.OPEN_PIX,
+    turso: {
+      databaseUrl: "",
+      authToken: "",
+    },
+  },
+
   app: {
     head: {
-      title: "CV Analyser",
+      title: "olhameucv.ai",
+      link: [
+        {
+          rel: "icon",
+          href: "/favicon.png",
+        },
+      ],
       script: [
         {
           src: "https://plugin.openpix.com.br/v1/openpix.js",
-          body: true,
-          async: true,
           defer: true,
+          async: true,
         },
       ],
     },
   },
+
   css: ["@/assets/css/base.css"],
   modules: [
     "@nuxtjs/tailwindcss",
     "@nuxt/eslint",
     "@vueuse/nuxt",
     "@nuxtjs/google-fonts",
-    "nuxt-og-image",
     "shadcn-nuxt",
     "nuxt-lucide-icons",
   ],
@@ -41,7 +55,7 @@ export default defineNuxtConfig({
     fontsDir: "assets/fonts",
     overwriting: true,
     families: {
-      Inter: [300, 500, 800],
+      Inter: [300, 400, 500, 600, 800],
     },
   },
   shadcn: {

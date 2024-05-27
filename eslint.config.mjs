@@ -1,11 +1,12 @@
-import withNuxt from './.nuxt/eslint.config.mjs'
+import withNuxt from "./.nuxt/eslint.config.mjs"
 
 export default withNuxt(
   {
     // files: ['**/*.ts', '**/*.tsx'],
     rules: {
       // 'no-console': 'off' // allow console.log in TypeScript files
-      'vue/html-self-closing': 0,
+      "vue/html-self-closing": 0,
+      "@typescript-eslint/no-explicit-any": "warn",
     },
   },
 )
