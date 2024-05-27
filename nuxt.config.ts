@@ -1,5 +1,8 @@
 // https://nuxt.com/docs/api/configuration/nuxt-config
 export default defineNuxtConfig({
+  runtimeConfig: {
+    OPEN_PIX: process.env.OPEN_PIX,
+  },
   devtools: { enabled: true },
 
   runtimeConfig: {
@@ -13,10 +16,12 @@ export default defineNuxtConfig({
   app: {
     head: {
       title: "olhameucv.ai",
-      link: [{
-        rel: "icon",
-        href: "/favicon.png",
-      }],
+      link: [
+        {
+          rel: "icon",
+          href: "/favicon.png",
+        },
+      ],
       script: [
         {
           src: "https://plugin.openpix.com.br/v1/openpix.js",
@@ -53,7 +58,6 @@ export default defineNuxtConfig({
       Inter: [300, 400, 500, 600, 800],
     },
   },
-
   shadcn: {
     /**
      * Prefix for all the imported component
@@ -65,4 +69,4 @@ export default defineNuxtConfig({
      */
     componentDir: "./components/ui",
   },
-})
+});
