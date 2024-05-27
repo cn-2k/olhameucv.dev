@@ -20,7 +20,7 @@
       class="cursor-pointer absolute top-0 left-0 right-0 bottom-0 block"
     />
     <div
-      v-if="!showFeedback && !wantsToPay && !isLoading"
+      v-if="!wantsToPay && !isLoading"
       class="z-10 text-center flex flex-col gap-2"
     >
       <!-- label button -->
@@ -30,16 +30,16 @@
       >
         Selecione o seu currículo (.pdf)
       </label>
-      <p class="text-xs text-gray-400">
-        ou arraste e solte o arquivo pdf aqui
-      </p>
+      <p class="text-xs text-gray-400">ou arraste e solte o arquivo pdf aqui</p>
     </div>
     <div
-      v-if="wantsToPay && !showFeedback && !isLoading"
+      v-if="wantsToPay && !isLoading"
       class="z-10 flex flex-col gap-2 overflow-hidden"
     >
       <div>
-        <p class="text-green-500 tracking-tight text-center font-semibold text-lg">
+        <p
+          class="text-green-500 tracking-tight text-center font-semibold text-lg"
+        >
           Arquivo processado com sucesso!
         </p>
       </div>
@@ -67,68 +67,73 @@
       class="text-sm text-center w-full text-zinc-600 items-center flex justify-center flex-col gap-4"
     >
       <LucideLoader class="animate-spin size-6" />
-      {{ isProcessingFile ? "Processando o arquivo..." : "Estamos analisando, só um momento..." }}
+      {{
+        isProcessingFile
+          ? "Processando o arquivo..."
+          : "Estamos analisando, só um momento..."
+      }}
     </div>
   </div>
 </template>
 
 <script lang="ts" setup>
-import { toast } from "vue-sonner"
+import { toast } from "vue-sonner";
 
 const props = defineProps<{
-  isProcessingFile: boolean
-  isConfirmingPayment: boolean
-  showFeedback: boolean
-}>()
+  isProcessingFile: boolean;
+  isConfirmingPayment: boolean;
+}>();
 
 const emit = defineEmits<{
-  (event: "update:selectedFile", file: File | null): void
-  (event: "handleFile", file: any): void
-  (event: "startPayment"): void
-}>()
+  (event: "update:selectedFile", file: File | null): void;
+  (event: "handleFile", file: any): void;
+  (event: "startPayment"): void;
+}>();
 
-const dropZoneRef = ref<HTMLElement>()
-const { isOverDropZone } = useDropZone(dropZoneRef, onDrop)
-const wantsToPay = ref(false)
+const dropZoneRef = ref<HTMLElement>();
+const { isOverDropZone } = useDropZone(dropZoneRef, onDrop);
+const wantsToPay = ref(false);
 
-const isLoading = computed(() => props.isProcessingFile || props.isConfirmingPayment)
+const isLoading = computed(
+  () => props.isProcessingFile || props.isConfirmingPayment
+);
 
 function onFileSelect(e: Event) {
-  const input = e.target as HTMLInputElement
-  const file = input.files ? input.files[0] : null
+  const input = e.target as HTMLInputElement;
+  const file = input.files ? input.files[0] : null;
 
-  if (!file) return
+  if (!file) return;
 
   if (file.type !== "application/pdf") {
     toast.error("Erro ao enviar o arquivo", {
       description: "O arquivo deve ser um PDF",
-    })
-    return
+    });
+    return;
   }
 
   if (file && file.type === "application/pdf") {
-    emit("update:selectedFile", file)
-    emit("handleFile", file)
-    wantsToPay.value = true
+    emit("update:selectedFile", file);
+    emit("handleFile", file);
+    wantsToPay.value = true;
   }
 
-  input.value = ""
+  input.value = "";
 }
 
 function onDrop(file: File[] | null) {
-  if (!file) return
+  if (!file) return;
 
   if (file[0].type !== "application/pdf") {
     toast.error("Erro ao enviar o arquivo", {
       description: "O arquivo deve ser um PDF",
-    })
-    return
+    });
+    return;
   }
 
   if (file && file[0].type === "application/pdf") {
-    emit("update:selectedFile", file[0])
-    emit("handleFile", file[0])
-    wantsToPay.value = true
+    emit("update:selectedFile", file[0]);
+    emit("handleFile", file[0]);
+    wantsToPay.value = true;
   }
 }
 </script>
