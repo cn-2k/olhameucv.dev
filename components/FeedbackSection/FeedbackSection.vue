@@ -87,7 +87,7 @@
                   placeholder="Email"
                   required
                 />
-                <Button> Reenviar </Button>
+                <Button @click="handleResend"> Reenviar </Button>
               </div>
             </div>
           </PopoverContent>
@@ -118,13 +118,30 @@ import { useFileUpload } from "@/composables/useFileUpload";
 
 const { feedback, showFeedback } = useFileUpload();
 
+const router = useRouter();
+
 const feedbackResponse: FeedbackProps | null = JSON.parse(
   String(feedback.value)
 );
 const feedbackResponseEmail = ref(feedbackResponse?.response?.email);
 
+const handleResend = async () => {
+  try {
+    const response = await fetch("/api/resume/resend", {
+      method: "POST",
+      body: JSON.stringify({
+        email: feedbackResponseEmail.value,
+      }),
+    });
+
+    console.log(response);
+  } catch (error) {
+    console.error(error);
+  }
+};
+
 function handleCloseFeedback() {
   showFeedback.value = false;
-  useRouter().push("/");
+  router.push("/");
 }
 </script>
