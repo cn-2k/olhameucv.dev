@@ -3,8 +3,10 @@ import { useRouter } from "vue-router";
 import ContentHero from "@/components/ContentHero.vue";
 import { Toaster } from "@/components/ui/sonner";
 
+const router = useRouter();
+
 const showFeedback = (isConfirm) => {
-  if (isConfirm) useRouter().push("/confirm");
+  if (isConfirm) router.push("/confirm");
 };
 </script>
 

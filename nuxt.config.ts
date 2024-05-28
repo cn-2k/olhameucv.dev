@@ -6,6 +6,7 @@ export default defineNuxtConfig({
   devtools: { enabled: true },
 
   runtimeConfig: {
+    RESEND_KEY: process.env.RESEND_KEY,
     OPEN_PIX: process.env.OPEN_PIX,
     turso: {
       databaseUrl: "",
@@ -40,6 +41,7 @@ export default defineNuxtConfig({
     "@nuxtjs/google-fonts",
     "shadcn-nuxt",
     "nuxt-lucide-icons",
+    "@vue-email/nuxt",
   ],
 
   eslint: {
