@@ -3,7 +3,7 @@ import { EmptyContentError, DefaultServerError } from "./errors";
 import type { OpenAIMessage } from "~/entities/OpenAI";
 
 export interface OpenAIClient {
-  createCompletions<T>(messages: OpenAIMessage[]): Promise<T>;
+  createCompletions<T>(messages: OpenAIMessage[]): Promise<T>
 }
 
 export function NewOpenAI(client: OpenAI): OpenAIClient {
@@ -25,7 +25,6 @@ export function NewOpenAI(client: OpenAI): OpenAIClient {
       try {
         return JSON.parse(content) as T;
       } catch (e) {
-        console.log("createCompletions error:", e);
         return await createCompletions(messages);
       }
     } catch (e) {

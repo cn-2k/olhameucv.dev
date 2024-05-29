@@ -80,14 +80,14 @@
 import { toast } from "vue-sonner";
 
 const props = defineProps<{
-  isProcessingFile: boolean;
-  isConfirmingPayment: boolean;
+  isProcessingFile: boolean
+  isConfirmingPayment: boolean
 }>();
 
 const emit = defineEmits<{
-  (event: "update:selectedFile", file: File | null): void;
-  (event: "handleFile", file: any): void;
-  (event: "startPayment"): void;
+  (event: "update:selectedFile", file: File | null): void
+  (event: "handleFile", file: any): void
+  (event: "startPayment"): void
 }>();
 
 const dropZoneRef = ref<HTMLElement>();

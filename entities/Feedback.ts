@@ -8,7 +8,7 @@ interface Experiences {
   [key: string]: Experience
 }
 
-interface FeedbackResponse {
+export interface FeedbackResponse {
   experiences: Experiences
   bio: string
   name: string

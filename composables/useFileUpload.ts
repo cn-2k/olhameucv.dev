@@ -43,9 +43,6 @@ export function useFileUpload() {
       },
     ]);
 
-    console.log("Correlation ID", currentCorrelationID.value);
-    console.log("Process ID", processId.value);
-
     setupPaymentListeners(processId.value, currentCorrelationID.value);
   }
 
@@ -58,7 +55,7 @@ export function useFileUpload() {
           }
           break;
         case "CHARGE_EXPIRED":
-          console.log("A cobrança expirou.");
+          toast.error("A cobrança expirou.");
           break;
         case "ON_CLOSE":
           if (isConfirmingPayment.value) {
@@ -68,7 +65,7 @@ export function useFileUpload() {
           isProcessingFile.value = false;
           break;
         case "ON_ERROR":
-          console.log("Ocorreu um erro com o pagamento.");
+          toast.error("Ocorreu um erro com o pagamento.");
           break;
       }
     };

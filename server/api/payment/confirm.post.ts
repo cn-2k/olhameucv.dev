@@ -1,11 +1,14 @@
 import { Resend } from "resend";
 import { openai } from "~/libs/openai/openai";
 import { NewPrompt } from "~/libs/openai/promptbuilder";
+import { useCompiler } from "#vue-email"
+import type { FeedbackResponse } from "~/entities/Feedback";
 
 const resend = new Resend(process.env.RESEND_KEY);
 
 export default defineEventHandler(async (event) => {
   const { processId, correlationId } = await readBody(event);
+
   const client = useTurso();
 
   // Atualiza o estado do pagamento no banco de dados
@@ -66,6 +69,7 @@ export default defineEventHandler(async (event) => {
     -separe o email do canditado e coloque na chave da response email
     -separe sua avaliação do candidato e coloque sua visão com base na sua visao de recrutador e coloque em feedback
     -separe suas sugestões para melhorar o curriculo do candidato e coloque em suggestions
+    - certifique-se de que o valor de cada propriedade do objeto é uma string, não um objeto.
   `);
 
   prompt.withResponseType({
@@ -81,18 +85,36 @@ export default defineEventHandler(async (event) => {
 
   const messages = prompt.build();
 
-  const response = await openai.createCompletions(messages);
+  const response: FeedbackResponse = await openai.createCompletions(messages);
 
-  try {
-    await resend.emails.send({
-      from: "Acme <onboarding@resend.dev>",
-      to: ["rodrigo.gabriel@cuponomia.com.br", "rodrigorgrb@gmail.com"],
-      subject: "Hello world",
-      html: "<strong>It works!</strong>",
-    });
-  } catch (error) {
-    console.log(error);
+  // TODO: save info on db
+  // await client.execute({
+  //   sql: "UPDATE usuarios SET feedback = ?, suggestions = ? WHERE process_id = ?",
+  //   args: [response.experiences, response.suggestions, processId],
+  // });
+
+  const template = await useCompiler("feedbackAnalyse.vue", {
+    props: {
+      feedbackOverview: response.experiences,
+      feedbackResponse: response.suggestions,
+    }
+  })
+
+  const emailRegex = /[\w.-]+@[\w.-]+\.\w+/
+  const emailMatch = resume.match(emailRegex)
+
+  const options = {
+    from: "Acme <onboarding@resend.dev>",
+    to: String(emailMatch[0]),
+    subject: "Avaliação de currículo",
+    html: template.html,
   }
 
-  return { response };
+  try {
+    await resend.emails.send(options);
+    return { response };
+  } catch (error) {
+    console.error("Error sending email:", error);
+    return { message: "Failed to send email", error };
+  }
 });

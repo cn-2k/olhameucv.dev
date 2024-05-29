@@ -87,7 +87,7 @@
                   placeholder="Email"
                   required
                 />
-                <Button @click="handleResend"> Reenviar </Button>
+                <Button :disabled="isResending" @click="handleResend"> <LucideLoader2 v-if="isResending" class="w-4 h-4 mr-2 animate-spin" />  {{ isResending ? "Reenviando..." : "Reenviar" }} </Button>
               </div>
             </div>
           </PopoverContent>
@@ -107,6 +107,8 @@
 
 <script lang="ts" setup>
 import { useRouter } from "vue-router";
+import axios from "axios";
+import { toast } from "vue-sonner";
 import {
   Popover,
   PopoverContent,
@@ -117,26 +119,28 @@ import type { FeedbackProps } from "@/entities/Feedback";
 import { useFileUpload } from "@/composables/useFileUpload";
 
 const { feedback, showFeedback } = useFileUpload();
-
 const router = useRouter();
+const isResending = ref<boolean>(false);
 
 const feedbackResponse: FeedbackProps | null = JSON.parse(
   String(feedback.value)
 );
+
 const feedbackResponseEmail = ref(feedbackResponse?.response?.email);
 
 const handleResend = async () => {
+  isResending.value = true;
   try {
-    const response = await fetch("/api/resume/resend", {
-      method: "POST",
-      body: JSON.stringify({
-        email: feedbackResponseEmail.value,
-      }),
+    await axios.post("/api/resume/resend", {
+      email: feedbackResponseEmail.value,
+      feedbackResponse: feedbackResponse?.response,
     });
 
-    console.log(response);
+    toast.success("E-mail reenviado, cheque sua caixa de entrada!");
+    isResending.value = false;
   } catch (error) {
     console.error(error);
+    isResending.value = false;
   }
 };
 
