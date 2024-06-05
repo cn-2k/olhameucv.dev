@@ -31,39 +31,26 @@
             >
               <path
                 fill="currentColor"
-                d="m19.6 21l-6.3-6.3q-.75.6-1.725.95T9.5 16q-2.725 0-4.612-1.888T3 9.5t1.888-4.612T9.5 3t4.613 1.888T16 9.5q0 1.1-.35 2.075T14.7 13.3l6.3 6.3zM9.5 14q1.875 0 3.188-1.312T14 9.5t-1.312-3.187T9.5 5T6.313 6.313T5 9.5t1.313 3.188T9.5 14"
-              />
-            </svg>
-            Visão geral
-          </h2>
-          <p class="text-justify text-base tracking-tight text-zinc-800">
-            {{ feedbackResponse.response.experiences }}
-          </p>
-        </div>
-        <div class="space-y-2">
-          <h2 class="flex items-center gap-2 text-lg font-bold text-green-500">
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              width="32"
-              height="32"
-              viewBox="0 0 24 24"
-            >
-              <path
-                fill="currentColor"
                 d="M6 22q-.825 0-1.412-.587T4 20V4q0-.825.588-1.412T6 2h8.075q.45 0 .85.188t.675.537l3.925 4.725q.225.275.35.6t.125.675V20q0 .675-.612.925T18.3 20.7L14 16.45q-.425.275-.925.413T12 17q-1.65 0-2.825-1.175T8 13t1.175-2.825T12 9t2.825 1.175T16 13q0 .575-.137 1.075T15.45 15L18 17.6V8.7L14.05 4H6v16h8.325q.5 0 .75.313t.25.687t-.25.688t-.75.312zm6-7q.825 0 1.413-.587T14 13t-.587-1.412T12 11t-1.412.588T10 13t.588 1.413T12 15m0-2"
               />
             </svg>
             Feedback
           </h2>
-          <p class="text-justify text-base tracking-tight text-zinc-800">
-            {{ feedbackResponse.response.suggestions }}
-          </p>
+          <div v-if="feedbackResponse" class="grid grid-cols-1 lg:grid-cols-2 gap-8 text-gray-800 text-center lg:text-justify">
+            <div v-for="item in feedbackResponseAnalyse" :key="item.section" class="bg-white rounded-lg shadow-md p-6" :class="{ 'lg:col-span-2': item.section === '🏅 Certificações' }">
+              <h1 class="text-lg font-bold mb-3 text-gray-700">{{ item.section }}</h1>
+              <div class="space-y-2">
+                <p class="text-sm"><span class="font-semibold">🔍 Feedback:</span> {{ item.feedback }}</p>
+                <p class="text-sm"><span class="font-semibold">💡 Sugestões:</span> {{ item.suggestions }}</p>
+              </div>
+            </div>
+          </div>
         </div>
       </div>
     </div>
     <div class="flex justify-end mt-10 text-zinc-800">
       <div class="flex flex-col gap-2">
-        <Popover>
+        <Popover v-if="feedbackResponse">
           <PopoverTrigger as-child>
             <Button size="sm" variant="outline">
               <LucideMail class="size-4 mr-2" /> Alterar ou reenviar e-mail
@@ -82,7 +69,7 @@
               <div class="flex w-full max-w-sm items-center gap-1.5">
                 <Input
                   id="email"
-                  v-model="feedbackResponseEmail"
+                  v-model="feedbackResponse.email"
                   type="email"
                   placeholder="Email"
                   required
@@ -126,14 +113,14 @@ const feedbackResponse: FeedbackProps | null = JSON.parse(
   String(feedback.value)
 );
 
-const feedbackResponseEmail = ref(feedbackResponse?.response?.email);
+console.log("feedback no FeedbackSection ==> ", feedbackResponse);
 
 const handleResend = async () => {
   isResending.value = true;
   try {
     await axios.post("/api/resume/resend", {
-      email: feedbackResponseEmail.value,
-      feedbackResponse: feedbackResponse?.response,
+      email: feedbackResponse?.email,
+      feedbackResponse: feedbackResponse,
     });
 
     toast.success("E-mail reenviado, cheque sua caixa de entrada!");
@@ -148,4 +135,32 @@ function handleCloseFeedback() {
   showFeedback.value = false;
   router.push("/");
 }
+
+const feedbackResponseAnalyse = [
+  {
+    section: "📄 Resumo",
+    feedback: feedbackResponse?.summary.feedback,
+    suggestions: feedbackResponse?.summary.suggestions,
+  },
+  {
+    section: "💼 Experiências Profissionais",
+    feedback: feedbackResponse?.profissionalExperiences.feedback,
+    suggestions: feedbackResponse?.profissionalExperiences.suggestions,
+  },
+  {
+    section: "🎓 Formação acadêmica",
+    feedback: feedbackResponse?.education.feedback,
+    suggestions: feedbackResponse?.education.suggestions,
+  },
+  {
+    section: "🛠️ Habilidades",
+    feedback: feedbackResponse?.skills.feedback,
+    suggestions: feedbackResponse?.skills.suggestions,
+  },
+  {
+    section: "🏅 Certificações",
+    feedback: feedbackResponse?.certifications.feedback,
+    suggestions: feedbackResponse?.certifications.suggestions,
+  },
+]
 </script>

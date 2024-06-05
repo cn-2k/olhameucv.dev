@@ -21,7 +21,7 @@
 import { useFileUpload } from "@/composables/useFileUpload";
 
 const emit = defineEmits<{
-  (e: "update:showFeedback", value: boolean): boolean;
+  (e: "update:showFeedback", value: boolean): boolean
 }>();
 
 const selectedFile = ref<File | null>(null);

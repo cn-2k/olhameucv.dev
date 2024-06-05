@@ -1,24 +1,39 @@
-interface Experience {
-  position?: string
-  duration: string
-  responsibilities: string
-}
-
-interface Experiences {
-  [key: string]: Experience
-}
-
 export interface FeedbackResponse {
-  experiences: Experiences
-  bio: string
-  name: string
-  technologies: string[]
-  linkedinUrl: string
-  email: string
-  feedback: string
-  suggestions: string
+  response: {
+    email: string
+    summary: {
+      feedback: string
+      suggestions: string
+    }
+    profissionalExperiences: {
+      feedback: string
+      suggestions: string
+    }
+    education: {
+      feedback: string
+      suggestions: string
+    }
+    skills: {
+      feedback: string
+      suggestions: string
+    }
+    certifications: {
+      feedback: string
+      suggestions: string
+    }
+  }
 }
 
 export interface FeedbackProps {
-  response: FeedbackResponse
+  email: string
+  summary: FeedbackSection
+  profissionalExperiences: FeedbackSection
+  education: FeedbackSection
+  skills: FeedbackSection
+  certifications: FeedbackSection
+}
+
+interface FeedbackSection {
+  feedback: string
+  suggestions: string
 }

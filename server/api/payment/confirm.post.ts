@@ -2,7 +2,6 @@ import { Resend } from "resend";
 import { openai } from "~/libs/openai/openai";
 import { NewPrompt } from "~/libs/openai/promptbuilder";
 import { useCompiler } from "#vue-email"
-import type { FeedbackResponse } from "~/entities/Feedback";
 
 const resend = new Resend(process.env.RESEND_KEY);
 
@@ -24,97 +23,117 @@ export default defineEventHandler(async (event) => {
   });
 
   const resume = rows[0].resume as any;
+
+  // Dividir o currículo em seções
+  const sections = {
+    summary: getSection(resume, "Resumo"),
+    experience: getSection(resume, "Experiência"),
+    education: getSection(resume, "Formação acadêmica"),
+    skills: getSection(resume, "Principais Competências"),
+    certifications: getSection(resume, "Certifications"),
+  }
+
   const prompt = NewPrompt();
 
   prompt.withPersona(`
-      The text you provided is already in English. Here's the translation to Portuguese in case that's what you meant:
+    Persona do Recrutador: Especialista Experiente em Recrutamento de Engenheiros e Desenvolvedores de Software.
 
-      Persona do Recrutador: Especialista Experiente em Recrutamento de Engenheiros de Software
+    Objetivo: Avaliar a adequação de um candidato para cargos de engenheiro de software com base no resumo do seu currículo.
 
-      Objetivo: Avaliar a adequação de um candidato para cargos de engenheiro de software com base no resumo do seu currículo.
+    Pontos-chave a serem considerados:
 
-      Pontos-chave a serem considerados:
+    Histórico profissional:
+    - Foco em resultados e impacto: Priorizar as realizações do candidato e o impacto tangível que ele causou em cada função.
+    - Considerar o tipo de empresa: Avaliar a relevância das empresas em que o candidato trabalhou, incluindo startups, grandes empresas de tecnologia e agências.
+    - Avaliar expertise em tecnologia: Identificar as tecnologias mencionadas e avaliar o nível de proficiência do candidato e os anos de experiência com cada uma.
+    Educação e certificações:
+    - Dar menos peso à educação: Embora a educação possa fornecer contexto, geralmente é menos significativa para funções de engenheiro de software.
+    - Não confiar apenas em credenciais: Não baseie decisões apenas em diplomas, certificações ou cursos online.
+    Presença online:
+    - LinkedIn como fonte primária: Use o LinkedIn como a plataforma principal para entender o perfil profissional do candidato.
+    - Considere GitHub, sites pessoais e blogs: Embora não sejam essenciais, essas plataformas podem fornecer informações adicionais.
+    - Valorizar o envolvimento da comunidade: A participação positiva em comunidades online pode ser um indicador valioso.
+    Detalhes do resumo do currículo:
+    - Revisão completa do histórico de trabalho: Comece examinando cuidadosamente o histórico profissional do candidato.
+    - Use descrições de experiência para perguntas direcionadas: Utilize as descrições de experiências passadas para formular perguntas de entrevista relevantes.
+    - Dese enfocar a posse: Não priorize o tempo gasto em cada empresa; concentre-se na qualidade de suas contribuições.
+    Considerações adicionais:
+    - Alinhamento de habilidades técnicas: Avaliar se as habilidades técnicas do candidato estão alinhadas com os requisitos específicos da posição em aberto.
+    - Ajuste cultural: Avaliar o ajuste cultural do candidato com o ambiente de trabalho e os valores da empresa.
+    - Habilidades de comunicação e interpessoais: Avaliar a capacidade do candidato de se comunicar de forma eficaz e colaborar com os outros.
+  `)
 
-      Histórico profissional:
-
-      Foco em resultados e impacto: Priorizar as realizações do candidato e o impacto tangível que ele causou em cada função.
-      Considerar o tipo de empresa: Avaliar a relevância das empresas em que o candidato trabalhou, incluindo startups, grandes empresas de tecnologia e agências.
-      Avaliar expertise em tecnologia: Identificar as tecnologias mencionadas e avaliar o nível de proficiência do candidato e os anos de experiência com cada uma.
-      Educação e certificações:
-
-      Dar menos peso à educação: Embora a educação possa fornecer contexto, geralmente é menos significativa para funções de engenheiro de software.
-      Não confiar apenas em credenciais: Não baseie decisões apenas em diplomas, certificações ou cursos online.
-      Presença online:
-
-      LinkedIn como fonte primária: Use o LinkedIn como a plataforma principal para entender o perfil profissional do candidato.
-      Considere GitHub, sites pessoais e blogs: Embora não sejam essenciais, essas plataformas podem fornecer informações adicionais.
-      Valorizar o envolvimento da comunidade: A participação positiva em comunidades online pode ser um indicador valioso.
-      Detalhes do resumo do currículo:
-
-      Revisão completa do histórico de trabalho: Comece examinando cuidadosamente o histórico profissional do candidato.
-      Use descrições de experiência para perguntas direcionadas: Utilize as descrições de experiências passadas para formular perguntas de entrevista relevantes.
-      Dese enfocar a posse: Não priorize o tempo gasto em cada empresa; concentre-se na qualidade de suas contribuições.
-      Considerações adicionais:
-
-      Alinhamento de habilidades técnicas: Avaliar se as habilidades técnicas do candidato estão alinhadas com os requisitos específicos da posição em aberto.
-      Ajuste cultural: Avaliar o ajuste cultural do candidato com o ambiente de trabalho e os valores da empresa.
-      Habilidades de comunicação e interpessoais: Avaliar a capacidade do candidato de se comunicar de forma eficaz e colaborar com os outros.
-    `);
-
-  prompt.withContext(resume);
-
-  prompt.withContext(`
-    ## Context & Data:
-    ${resume}
-    -separe o email do canditado e coloque na chave da response email
-    -separe sua avaliação do candidato e coloque sua visão com base na sua visao de recrutador e coloque em feedback
-    -separe suas sugestões para melhorar o curriculo do candidato e coloque em suggestions
-    - certifique-se de que o valor de cada propriedade do objeto é uma string, não um objeto.
-  `);
-
-  prompt.withResponseType({
-    experiences: "",
-    bio: "",
-    name: "",
-    technologies: "",
-    linkedinUrl: "",
-    email: "",
-    feedback: "",
-    suggestions: "",
-  });
-
-  const messages = prompt.build();
-
-  const response: FeedbackResponse = await openai.createCompletions(messages);
-
-  // TODO: save info on db
-  // await client.execute({
-  //   sql: "UPDATE usuarios SET feedback = ?, suggestions = ? WHERE process_id = ?",
-  //   args: [response.experiences, response.suggestions, processId],
-  // });
-
-  const template = await useCompiler("feedbackAnalyse.vue", {
-    props: {
-      feedbackOverview: response.experiences,
-      feedbackResponse: response.suggestions,
-    }
-  })
+  for (const [section, content] of Object.entries(sections)) {
+    prompt.withContext(`
+      ## ${section.charAt(0).toUpperCase() + section.slice(1)} Sessão:
+      ${content}
+      - Avalie a seção de ${section} do currículo do candidato.
+      - Separe o email do canditado e coloque na chave da response email
+      - Separe o nome do candidato e coloque na chave da response name
+      - Forneça feedback específico sobre essa seção.
+      - Sugira melhorias específicas para esta seção.
+      - Retorne a resposta em português brasileiro.
+      - Forneça o feedback e análise como se estivesse falando com o candidato mas com nível de formalidade moderado.
+      - Não deixe explícito que a análise é baseada em cargo de "Engenheiro/Engenharia de Software" mas sim para desenvolvedor de software no geral.
+      - Caso usar o nome da sessão na resposta, traduza para o português brasileiro.
+    `)
+  }
 
   const emailRegex = /[\w.-]+@[\w.-]+\.\w+/
   const emailMatch = resume.match(emailRegex)
 
-  const options = {
-    from: "Acme <onboarding@resend.dev>",
-    to: String(emailMatch[0]),
-    subject: "Avaliação de currículo",
-    html: template.html,
-  }
+  prompt.withResponseType({
+    email: emailMatch[0],
+    summary: {
+      feedback: "",
+      suggestions: "",
+    },
+    profissionalExperiences: {
+      feedback: "",
+      suggestions: "",
+    },
+    education: {
+      feedback: "",
+      suggestions: "",
+    },
+    skills: {
+      feedback: "",
+      suggestions: "",
+    },
+    certifications: {
+      feedback: "",
+      suggestions: "",
+    },
+  })
+
+  const messages = prompt.build();
 
   try {
+    const response = await openai.createCompletions(messages)
+
+    const template = await useCompiler("feedbackAnalyse.vue", {
+      props: {
+        feedbackResponse: response,
+      }
+    })
+
+    const options = {
+      from: "Acme <onboarding@resend.dev>",
+      to: String(emailMatch[0]),
+      subject: "Avaliação de currículo",
+      html: template.html,
+    }
+
     await resend.emails.send(options);
     return { response };
   } catch (error) {
-    console.error("Error sending email:", error);
-    return { message: "Failed to send email", error };
+    console.error("Error processing response or sending email:", error);
   }
 });
+
+// Função auxiliar para extrair seções do currículo
+function getSection(resume: string, sectionTitle: string) {
+  const sectionRegex = new RegExp(`${sectionTitle}:(.*?)(?=\\n[A-Z]|$)`, "s")
+  const match = resume.match(sectionRegex)
+  return match ? match[1].trim() : ""
+}

@@ -8,8 +8,7 @@ export default defineEventHandler(async (event) => {
 
   const template = await useCompiler("feedbackAnalyse.vue", {
     props: {
-      feedbackOverview: feedbackResponse.experiences,
-      feedbackResponse: feedbackResponse.suggestions,
+      feedbackResponse,
     }
   })
 

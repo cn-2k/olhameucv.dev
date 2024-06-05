@@ -83,7 +83,9 @@ export function useFileUpload() {
         processId,
         correlationId,
       });
-      feedback.value = JSON.stringify(data);
+
+      feedback.value = JSON.stringify(data.response);
+
       provide("feedback", feedback.value);
       showFeedback.value = true;
       isConfirmingPayment.value = false;
