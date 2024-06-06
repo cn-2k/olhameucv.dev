@@ -30,6 +30,10 @@ export default defineNuxtConfig({
     },
   },
 
+  site: {
+    url: "https://cv-analyser-frontend.vercel.app/",
+  },
+
   css: ["@/assets/css/base.css"],
 
   modules: [
@@ -40,6 +44,7 @@ export default defineNuxtConfig({
     "shadcn-nuxt",
     "nuxt-lucide-icons",
     "@vue-email/nuxt",
+    "nuxt-og-image"
   ],
 
   eslint: {
