@@ -1,5 +1,9 @@
 <script setup>
 import FeedbackSection from "@/components/FeedbackSection/FeedbackSection.vue";
+
+definePageMeta({
+  middleware: "redirect"
+})
 </script>
 
 <template>
