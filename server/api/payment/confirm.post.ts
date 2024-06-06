@@ -56,7 +56,7 @@ export default defineEventHandler(async (event) => {
     Detalhes do resumo do currículo:
     - Revisão completa do histórico de trabalho: Comece examinando cuidadosamente o histórico profissional do candidato.
     - Use descrições de experiência para perguntas direcionadas: Utilize as descrições de experiências passadas para formular perguntas de entrevista relevantes.
-    - Dese enfocar a posse: Não priorize o tempo gasto em cada empresa; concentre-se na qualidade de suas contribuições.
+    - Não priorize o tempo gasto em cada empresa; concentre-se na qualidade de suas contribuições.
     Considerações adicionais:
     - Alinhamento de habilidades técnicas: Avaliar se as habilidades técnicas do candidato estão alinhadas com os requisitos específicos da posição em aberto.
     - Ajuste cultural: Avaliar o ajuste cultural do candidato com o ambiente de trabalho e os valores da empresa.
@@ -65,17 +65,16 @@ export default defineEventHandler(async (event) => {
 
   for (const [section, content] of Object.entries(sections)) {
     prompt.withContext(`
-      ## ${section.charAt(0).toUpperCase() + section.slice(1)} Sessão:
+      ## ${section.charAt(0).toUpperCase() + section.slice(1)} Seção:
       ${content}
       - Avalie a seção de ${section} do currículo do candidato.
       - Separe o email do canditado e coloque na chave da response email
-      - Separe o nome do candidato e coloque na chave da response name
       - Forneça feedback específico sobre essa seção.
       - Sugira melhorias específicas para esta seção.
       - Retorne a resposta em português brasileiro.
       - Forneça o feedback e análise como se estivesse falando com o candidato mas com nível de formalidade moderado.
       - Não deixe explícito que a análise é baseada em cargo de "Engenheiro/Engenharia de Software" mas sim para desenvolvedor de software no geral.
-      - Caso usar o nome da sessão na resposta, traduza para o português brasileiro.
+      - Caso usar o nome da seção na resposta, traduza para o português brasileiro.
     `)
   }
 

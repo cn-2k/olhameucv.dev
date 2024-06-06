@@ -31,6 +31,7 @@ export default defineNuxtConfig({
   },
 
   css: ["@/assets/css/base.css"],
+
   modules: [
     "@nuxtjs/tailwindcss",
     "@nuxt/eslint",
@@ -57,6 +58,7 @@ export default defineNuxtConfig({
       Inter: [300, 400, 500, 600, 800],
     },
   },
+
   shadcn: {
     /**
      * Prefix for all the imported component
@@ -68,4 +70,12 @@ export default defineNuxtConfig({
      */
     componentDir: "./components/ui",
   },
+
+  typescript: {
+    tsConfig: {
+      compilerOptions: {
+        baseUrl: ".",
+      }
+    }
+  }
 });
