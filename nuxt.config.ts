@@ -31,7 +31,7 @@ export default defineNuxtConfig({
   },
 
   site: {
-    url: "https://cv-analyser-frontend.vercel.app/",
+    url: "https://olhameucv-ai.vercel.app/",
   },
 
   css: ["@/assets/css/base.css"],
