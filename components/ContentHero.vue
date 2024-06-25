@@ -1,9 +1,10 @@
 <template>
   <div
-    class="flex gap-4 flex-col justify-center sm:text-center lg:py-12 lg:text-left w-full lg:w-1/2 xl:py-24"
+    class="flex gap-4 flex-col justify-center sm:text-center lg:py-2 lg:text-left w-full lg:w-1/2 xl:py-10"
   >
-    <h1 class="text-5xl tracking-tighter font-semibold text-zinc-600">
-      Dê um <span class="text-yellow-400">boost</span> no seu currículo 🚀
+    <h1 class="text-5xl tracking-tighter font-semibold text-zinc-600">Opa, <span class="text-blue-600">Dev!</span> 👋</h1>
+    <h1 class="text-4xl tracking-tighter font-semibold text-zinc-600">
+      Que tal dar um <span class="text-white bg-yellow-500 px-2">boost</span> no seu currículo? 🚀
     </h1>
 
     <p class="mb-8 leading-relaxed text-zinc-600 md:mb-2 lg:w-full xl:text-lg">
@@ -11,7 +12,7 @@
       inteligência artificial, a análise é feita rapidamente e de forma
       inteligente a partir do olhar criterioso de experientes recrutadores.
       Descubra oportunidades de melhoria e dicas para aumentar suas chances no
-      mercado!
+      mercado de desenvolvimento!
     </p>
 
     <blockquote

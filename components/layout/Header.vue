@@ -1,6 +1,6 @@
 <template>
   <header
-    class="mb-8 flex items-center justify-between py-4 md:mb-12 md:py-8 xl:mb-0"
+    class="mb-8 flex items-center justify-between py-4 md:mb-12 md:pt-6 xl:mb-0"
   >
     <a
       href="/"

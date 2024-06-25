@@ -2,7 +2,7 @@
   <div
     class="relative w-full max-w-screen-2xl p-4 border rounded-md shadow-lg bg-white"
   >
-    <div class="flex flex-col items-center py-5 px-10 gap-4 antialiased">
+    <div class="flex flex-col items-center py-5 lg:px-10 gap-4 antialiased">
       <svg
         xmlns="http://www.w3.org/2000/svg"
         width="60"
