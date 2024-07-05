@@ -7,7 +7,7 @@
       class="inline-flex items-center gap-2.5 text-xl text-zinc-700 font-semibold md:text-2xl"
       aria-label="logo"
     >
-      <p>👀 olhameucv<span class="text-blue-700/70">.ai</span></p>
+      <p>👀 olhameucv<span class="text-blue-700/70">.dev</span></p>
     </a>
   </header>
 </template>

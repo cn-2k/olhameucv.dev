@@ -74,6 +74,24 @@
       }}
     </div>
   </div>
+  <AlertDialog :open="showAlert">
+    <AlertDialogContent>
+      <AlertDialogHeader>
+        <AlertDialogTitle>Atenção!</AlertDialogTitle>
+        <AlertDialogDescription>
+          <p class="leading-relaxed">
+            Para que sua análise seja feita corretamente e da melhor forma possível é necessário que o currículo enviado <span class="bg-blue-400/30 p-1 text-gray-600 font-semibold">tenha sido gerado através do LinkedIn</span> salvando o seu perfil como pdf.
+          </p>
+          <p class="mt-2">
+            Clique <NuxtLink href="https://www.linkedin.com/help/linkedin/answer/a541960/salvar-um-perfil-como-pdf?lang=pt-BR" target="_blank" class="font-semibold underline text-blue-700">aqui</NuxtLink> para saber como salvar o seu perfil como pdf no LinkedIn.
+          </p>
+        </AlertDialogDescription>
+      </AlertDialogHeader>
+      <AlertDialogFooter>
+        <AlertDialogAction @click="showAlert = false">Fechar</AlertDialogAction>
+      </AlertDialogFooter>
+    </AlertDialogContent>
+  </AlertDialog>
 </template>
 
 <script lang="ts" setup>
@@ -93,6 +111,7 @@ const emit = defineEmits<{
 const dropZoneRef = ref<HTMLElement>();
 const { isOverDropZone } = useDropZone(dropZoneRef, onDrop);
 const wantsToPay = ref(false);
+const showAlert = ref(false);
 
 const isLoading = computed(
   () => props.isProcessingFile || props.isConfirmingPayment
@@ -117,6 +136,8 @@ function onFileSelect(e: Event) {
     wantsToPay.value = true;
   }
 
+  showAlert.value = true
+
   input.value = "";
 }
 
@@ -135,5 +156,7 @@ function onDrop(file: File[] | null) {
     emit("handleFile", file[0]);
     wantsToPay.value = true;
   }
+
+  showAlert.value = true
 }
 </script>

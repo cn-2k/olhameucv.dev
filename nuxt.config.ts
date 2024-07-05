@@ -13,7 +13,7 @@ export default defineNuxtConfig({
 
   app: {
     head: {
-      title: "olhameucv.ai",
+      title: "olhameucv.dev",
       link: [
         {
           rel: "icon",

@@ -2,11 +2,11 @@
   <ETailwind>
     <EHtml>
       <EHead />
-      <EPreview>olhameucv.ai</EPreview>
+      <EPreview>olhameucv.dev</EPreview>
       <EBody :style="main">
         <EContainer class="w-full">
           <ESection class="p-4">
-            <EText class="text-xl font-bold">👀 olhameucv<b class="text-blue-700/70">.ai</b></EText>
+            <EText class="text-xl font-bold">👀 olhameucv<b class="text-blue-700/70">.dev</b></EText>
           </ESection>
 
           <ESection :style="content" class="border rounded overflow-hidden">
@@ -50,7 +50,7 @@
               color: 'rgb(0,0,0, 0.7)',
             }"
           >
-            © 2024 | www.olhameucv.ai.com
+            © 2024 | www.olhameucv.dev
           </EText>
         </EContainer>
       </EBody>
