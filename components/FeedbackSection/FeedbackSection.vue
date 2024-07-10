@@ -139,28 +139,28 @@ function handleCloseFeedback() {
 const feedbackResponseAnalyse = [
   {
     section: "📄 Resumo",
-    feedback: feedbackResponse?.summary.feedback,
-    suggestions: feedbackResponse?.summary.suggestions,
+    feedback: feedbackResponse?.summary.feedback || "Sem feedback",
+    suggestions: feedbackResponse?.summary.suggestions || "Sem sugestões",
   },
   {
     section: "💼 Experiências Profissionais",
-    feedback: feedbackResponse?.profissionalExperiences.feedback,
-    suggestions: feedbackResponse?.profissionalExperiences.suggestions,
+    feedback: feedbackResponse?.profissionalExperiences.feedback || "Sem feedback",
+    suggestions: feedbackResponse?.profissionalExperiences.suggestions || "Sem sugestões",
   },
   {
     section: "🎓 Formação acadêmica",
-    feedback: feedbackResponse?.education.feedback,
-    suggestions: feedbackResponse?.education.suggestions,
+    feedback: feedbackResponse?.education.feedback || "Sem feedback",
+    suggestions: feedbackResponse?.education.suggestions || "Sem sugestões",
   },
   {
     section: "🛠️ Habilidades",
-    feedback: feedbackResponse?.skills.feedback,
-    suggestions: feedbackResponse?.skills.suggestions,
+    feedback: feedbackResponse?.skills.feedback || "Sem feedback",
+    suggestions: feedbackResponse?.skills.suggestions || "Sem sugestões",
   },
   {
     section: "🏅 Certificações",
-    feedback: feedbackResponse?.certifications.feedback,
-    suggestions: feedbackResponse?.certifications.suggestions,
+    feedback: feedbackResponse?.certifications.feedback || "Sem feedback",
+    suggestions: feedbackResponse?.certifications.suggestions || "Sem sugestões",
   },
 ]
 </script>

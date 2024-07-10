@@ -22,6 +22,7 @@
     "nuxt-og-image": "^3.0.0-rc.53",
     "openai": "^4.36.0",
     "pdf-text": "^0.4.0",
+    "pinia": "^2.1.7",
     "radix-vue": "^1.7.0",
     "resend": "^3.2.0",
     "shadcn-nuxt": "^0.10.2",

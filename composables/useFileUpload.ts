@@ -105,6 +105,7 @@ export function useFileUpload() {
     feedback,
     isProcessingFile,
     isConfirmingPayment,
+    confirmPayment,
     isPixPaid,
     showFeedback,
     starPayment,
