@@ -1,13 +1,18 @@
 import { defineStore } from "pinia";
-import { useStorage } from "@vueuse/core";
 import { v4 as generateUUID } from "uuid";
-import { toast } from "vue-sonner";
+import axios from "axios";
+import { useRouter } from "vue-router";
+import { useGlobalStore } from "./GlobalStore";
 
 export const usePixStore = defineStore("pix", () => {
+  const globalStore = useGlobalStore();
+  const router = useRouter();
+
+  const { feedback } = storeToRefs(globalStore);
+
   const isPixPaid = ref(false);
+  const isExamine = ref(false);
   const currentCorrelationID = ref("");
-  const showFeedback = useStorage("showFeedback", false);
-  const feedback = useStorage("feedback", "");
 
   function startPayment() {
     currentCorrelationID.value = generateUUID();
@@ -21,10 +26,11 @@ export const usePixStore = defineStore("pix", () => {
       },
     ]);
 
-    setupPaymentListeners(processId.value, currentCorrelationID.value);
+    setupPaymentListeners(globalStore.processId, currentCorrelationID.value);
   }
 
   function setupPaymentListeners(processId: string, correlationId: string) {
+    console.log("Setting up payment listeners", processId, correlationId);
     const handlePaymentStatus = async (event: OpenPixEvent) => {
       switch (event.type) {
         case "PAYMENT_STATUS":
@@ -47,6 +53,8 @@ export const usePixStore = defineStore("pix", () => {
   }
 
   async function confirmPayment(processId: string, correlationId: string) {
+    console.log("Confirming payment", processId, correlationId);
+    isExamine.value = true;
     try {
       isPixPaid.value = true;
       const { data } = await axios.post("/api/payment/confirm", {
@@ -55,13 +63,14 @@ export const usePixStore = defineStore("pix", () => {
       });
 
       feedback.value = JSON.stringify(data.response);
-
-      provide("feedback", feedback.value);
-      showFeedback.value = true;
+      globalStore.showFeedback = true;
+      router.push("/confirm");
     } catch (error) {
       console.error("Erro ao confirmar pagamento:", error);
+    } finally {
+      isExamine.value = false;
     }
   }
 
-  return { startPayment };
+  return { startPayment, isPixPaid, isExamine };
 });

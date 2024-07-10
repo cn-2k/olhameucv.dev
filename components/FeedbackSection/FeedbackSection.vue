@@ -20,7 +20,10 @@
         que <strong class="text-green-500">enviamos no seu e-mail</strong> ou
         por aqui mesmo:
       </p>
-      <div v-if="feedbackResponse" class="flex flex-col lg:flex-row gap-8 mt-4">
+      <div
+        v-if="globalStore.feedback"
+        class="flex flex-col lg:flex-row gap-8 mt-4"
+      >
         <div class="space-y-2">
           <h2 class="flex items-center gap-2 text-lg font-bold text-green-500">
             <svg
@@ -37,7 +40,7 @@
             Feedback
           </h2>
           <div
-            v-if="feedbackResponse"
+            v-if="globalStore.feedback"
             class="grid grid-cols-1 lg:grid-cols-2 gap-8 text-gray-800 text-center lg:text-justify"
           >
             <div
@@ -66,7 +69,7 @@
     </div>
     <div class="flex justify-end mt-10 text-zinc-800">
       <div class="flex flex-col gap-2">
-        <Popover v-if="feedbackResponse">
+        <Popover v-if="globalStore.feedback">
           <PopoverTrigger as-child>
             <Button size="sm" variant="outline">
               <LucideMail class="size-4 mr-2" /> Alterar ou reenviar e-mail
@@ -85,7 +88,7 @@
               <div class="flex w-full max-w-sm items-center gap-1.5">
                 <Input
                   id="email"
-                  v-model="feedbackResponse.email"
+                  v-model="email"
                   type="email"
                   placeholder="Email"
                   required
@@ -124,23 +127,21 @@ import {
   PopoverTrigger,
 } from "@/components/ui/popover";
 import { Input } from "@/components/ui/input";
-import type { FeedbackProps } from "@/entities/Feedback";
+import { useGlobalStore } from "@/store/GlobalStore";
 
+const globalStore = useGlobalStore();
 const router = useRouter();
 const isResending = ref<boolean>(false);
-
-const feedbackResponse: FeedbackProps | null = JSON.parse(
-  String(feedback.value)
-);
-
-console.log("feedback no FeedbackSection ==> ", feedbackResponse);
+const feedbackResponseAnalyse: any = ref([]);
+const email = ref<string>("");
 
 const handleResend = async () => {
   isResending.value = true;
+  const data = JSON.parse(globalStore.feedback);
   try {
     await axios.post("/api/resume/resend", {
-      email: feedbackResponse?.email,
-      feedbackResponse: feedbackResponse,
+      email: email.value,
+      feedbackResponse: data,
     });
 
     toast.success("E-mail reenviado, cheque sua caixa de entrada!");
@@ -152,38 +153,40 @@ const handleResend = async () => {
 };
 
 function handleCloseFeedback() {
-  showFeedback.value = false;
+  globalStore.showFeedback = false;
+  globalStore.feedback = "";
   router.push("/");
 }
 
-const feedbackResponseAnalyse = [
-  {
-    section: "📄 Resumo",
-    feedback: feedbackResponse?.summary.feedback || "Sem feedback",
-    suggestions: feedbackResponse?.summary.suggestions || "Sem sugestões",
-  },
-  {
-    section: "💼 Experiências Profissionais",
-    feedback:
-      feedbackResponse?.profissionalExperiences.feedback || "Sem feedback",
-    suggestions:
-      feedbackResponse?.profissionalExperiences.suggestions || "Sem sugestões",
-  },
-  {
-    section: "🎓 Formação acadêmica",
-    feedback: feedbackResponse?.education.feedback || "Sem feedback",
-    suggestions: feedbackResponse?.education.suggestions || "Sem sugestões",
-  },
-  {
-    section: "🛠️ Habilidades",
-    feedback: feedbackResponse?.skills.feedback || "Sem feedback",
-    suggestions: feedbackResponse?.skills.suggestions || "Sem sugestões",
-  },
-  {
-    section: "🏅 Certificações",
-    feedback: feedbackResponse?.certifications.feedback || "Sem feedback",
-    suggestions:
-      feedbackResponse?.certifications.suggestions || "Sem sugestões",
-  },
-];
+onMounted(() => {
+  const data = JSON.parse(globalStore.feedback);
+  email.value = data.email;
+  feedbackResponseAnalyse.value = [
+    {
+      section: "📄 Resumo",
+      feedback: data.summary.feedback || "Sem feedback",
+      suggestions: data.summary.suggestions || "Sem sugestões",
+    },
+    {
+      section: "💼 Experiências Profissionais",
+      feedback: data.profissionalExperiences.feedback || "Sem feedback",
+      suggestions: data.profissionalExperiences.suggestions || "Sem sugestões",
+    },
+    {
+      section: "🎓 Formação acadêmica",
+      feedback: data.education.feedback || "Sem feedback",
+      suggestions: data.education.suggestions || "Sem sugestões",
+    },
+    {
+      section: "🛠️ Habilidades",
+      feedback: data.skills.feedback || "Sem feedback",
+      suggestions: data.skills.suggestions || "Sem sugestões",
+    },
+    {
+      section: "🏅 Certificações",
+      feedback: data.certifications.feedback || "Sem feedback",
+      suggestions: data.certifications.suggestions || "Sem sugestões",
+    },
+  ];
+});
 </script>

@@ -7,10 +7,6 @@ const resend = new Resend(process.env.RESEND_KEY);
 
 export default defineEventHandler(async (event) => {
   const { processId, correlationId } = await readBody(event);
-  throw createError({
-    status: 400,
-    statusMessage: "processId and correlationId required",
-  });
 
   const client = useTurso();
 

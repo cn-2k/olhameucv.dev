@@ -8,7 +8,6 @@
       />
       <UploadSection
         :is-processing-file="isProcessingFile"
-        @update:selected-file="selectedFile = $event"
         @handle-file="handleFile"
       />
     </div>
@@ -17,8 +16,6 @@
 
 <script setup lang="ts">
 import { useFileUpload } from "@/composables/useFileUpload";
-
-const selectedFile = ref<File | null>(null);
 
 const { handleFile, isProcessingFile } = useFileUpload();
 </script>

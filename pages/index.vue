@@ -4,7 +4,8 @@
       class="flex flex-col justify-between items-center gap-6 lg:flex-row 2xl:mt-48"
     >
       <ContentHero />
-      <AppFileDropzone v-if="!hasResume" @update:show-feedback="showFeedback" />
+      {{ globalStore.feedback }}
+      <AppFileDropzone v-if="!hasResume" />
       <PaymentSection v-else />
       <AlertDialog :open="showAlert">
         <AlertDialogContent>
@@ -14,9 +15,9 @@
               <p class="leading-relaxed">
                 Para que sua análise seja feita corretamente e da melhor forma
                 possível é necessário que o currículo enviado
-                <span class="bg-blue-400/30 p-1 text-gray-600 font-semibold"
-                  >tenha sido gerado através do LinkedIn</span
-                >
+                <span class="bg-blue-400/30 p-1 text-gray-600 font-semibold">
+                  tenha sido gerado através do LinkedIn
+                </span>
                 salvando o seu perfil como pdf.
               </p>
               <p class="mt-2">
@@ -25,16 +26,17 @@
                   href="https://www.linkedin.com/help/linkedin/answer/a541960/salvar-um-perfil-como-pdf?lang=pt-BR"
                   target="_blank"
                   class="font-semibold underline text-blue-700"
-                  >aqui</NuxtLink
                 >
+                  aqui
+                </NuxtLink>
                 para saber como salvar o seu perfil como pdf no LinkedIn.
               </p>
             </AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter>
-            <AlertDialogAction @click="showAlert = false"
-              >Fechar</AlertDialogAction
-            >
+            <AlertDialogAction @click="showAlert = false">
+              Fechar
+            </AlertDialogAction>
           </AlertDialogFooter>
         </AlertDialogContent>
       </AlertDialog>
@@ -59,16 +61,16 @@
 </template>
 
 <script setup lang="ts">
-import { useRouter } from "vue-router";
 import { storeToRefs } from "pinia";
+import { useRouter } from "vue-router";
 import { useGlobalStore } from "@/store/GlobalStore";
 
 const globalStore = useGlobalStore();
-const { hasResume, showAlert } = storeToRefs(globalStore);
+const { hasResume, showAlert, feedback } = storeToRefs(globalStore);
 
 const router = useRouter();
 
-const showFeedback = (isConfirm: boolean) => {
-  if (isConfirm) router.push("/confirm");
-};
+if (feedback.value) {
+  router.push("/confirm");
+}
 </script>
