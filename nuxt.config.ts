@@ -1,6 +1,6 @@
 // https://nuxt.com/docs/api/configuration/nuxt-config
 export default defineNuxtConfig({
-  devtools: { enabled: true },
+  devtools: { enabled: false },
 
   runtimeConfig: {
     RESEND_KEY: process.env.RESEND_KEY,
@@ -44,7 +44,9 @@ export default defineNuxtConfig({
     "shadcn-nuxt",
     "nuxt-lucide-icons",
     "@vue-email/nuxt",
-    "nuxt-og-image"
+    "nuxt-og-image",
+    "@pinia/nuxt",
+    "@pinia-plugin-persistedstate/nuxt",
   ],
 
   eslint: {
@@ -80,7 +82,7 @@ export default defineNuxtConfig({
     tsConfig: {
       compilerOptions: {
         baseUrl: ".",
-      }
-    }
-  }
+      },
+    },
+  },
 });

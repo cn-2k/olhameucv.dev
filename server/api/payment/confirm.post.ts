@@ -1,7 +1,7 @@
 import { Resend } from "resend";
 import { openai } from "~/libs/openai/openai";
 import { NewPrompt } from "~/libs/openai/promptbuilder";
-import { useCompiler } from "#vue-email"
+import { useCompiler } from "#vue-email";
 
 const resend = new Resend(process.env.RESEND_KEY);
 
@@ -31,7 +31,7 @@ export default defineEventHandler(async (event) => {
     education: getSection(resume, "Formação acadêmica"),
     skills: getSection(resume, "Principais Competências"),
     certifications: getSection(resume, "Certifications"),
-  }
+  };
 
   const prompt = NewPrompt();
 
@@ -61,7 +61,7 @@ export default defineEventHandler(async (event) => {
     - Alinhamento de habilidades técnicas: Avaliar se as habilidades técnicas do candidato estão alinhadas com os requisitos específicos da posição em aberto.
     - Ajuste cultural: Avaliar o ajuste cultural do candidato com o ambiente de trabalho e os valores da empresa.
     - Habilidades de comunicação e interpessoais: Avaliar a capacidade do candidato de se comunicar de forma eficaz e colaborar com os outros.
-  `)
+  `);
 
   for (const [section, content] of Object.entries(sections)) {
     prompt.withContext(`
@@ -75,11 +75,11 @@ export default defineEventHandler(async (event) => {
       - Forneça o feedback e análise como se estivesse falando com o candidato mas com nível de formalidade moderado.
       - Não deixe explícito que a análise é baseada em cargo de "Engenheiro/Engenharia de Software" mas sim para desenvolvedor de software no geral.
       - Caso usar o nome da seção na resposta, traduza para o português brasileiro.
-    `)
+    `);
   }
 
-  const emailRegex = /[\w.-]+@[\w.-]+\.\w+/
-  const emailMatch = resume.match(emailRegex)
+  const emailRegex = /[\w.-]+@[\w.-]+\.\w+/;
+  const emailMatch = resume.match(emailRegex);
 
   prompt.withResponseType({
     email: emailMatch[0],
@@ -103,25 +103,25 @@ export default defineEventHandler(async (event) => {
       feedback: "",
       suggestions: "",
     },
-  })
+  });
 
   const messages = prompt.build();
 
   try {
-    const response = await openai.createCompletions(messages)
+    const response = await openai.createCompletions(messages);
 
     const template = await useCompiler("feedbackAnalyse.vue", {
       props: {
         feedbackResponse: response,
-      }
-    })
+      },
+    });
 
     const options = {
       from: "Acme <onboarding@resend.dev>",
       to: String(emailMatch[0]),
       subject: "Avaliação de currículo",
       html: template.html,
-    }
+    };
 
     await resend.emails.send(options);
     return { response };
@@ -132,7 +132,7 @@ export default defineEventHandler(async (event) => {
 
 // Função auxiliar para extrair seções do currículo
 function getSection(resume: string, sectionTitle: string) {
-  const sectionRegex = new RegExp(`${sectionTitle}:(.*?)(?=\\n[A-Z]|$)`, "s")
-  const match = resume.match(sectionRegex)
-  return match ? match[1].trim() : ""
+  const sectionRegex = new RegExp(`${sectionTitle}:(.*?)(?=\\n[A-Z]|$)`, "s");
+  const match = resume.match(sectionRegex);
+  return match ? match[1].trim() : "";
 }
