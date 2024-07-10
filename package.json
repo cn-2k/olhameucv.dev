@@ -21,16 +21,18 @@
     "nuxt": "^3.11.2",
     "nuxt-og-image": "^3.0.0-rc.53",
     "openai": "^4.36.0",
-    "pdf2json": "^3.0.5",
+    "pdf-text": "^0.4.0",
     "radix-vue": "^1.7.0",
     "resend": "^3.2.0",
     "shadcn-nuxt": "^0.10.2",
     "tailwind-merge": "^2.2.2",
     "tailwindcss-animate": "^1.0.7",
+    "underscore": "^1.13.6",
     "uuid": "^9.0.1",
     "vue": "^3.4.22",
     "vue-router": "^4.3.0",
-    "vue-sonner": "^1.1.2"
+    "vue-sonner": "^1.1.2",
+    "xmldom": "^0.6.0"
   },
   "devDependencies": {
     "@nuxt/eslint": "^0.3.7",
