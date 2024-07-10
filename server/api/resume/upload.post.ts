@@ -30,15 +30,21 @@ export default defineEventHandler(async (event) => {
     const processId = uuidv4();
     const client = useTurso();
     const chunks = await toText(pdfBuffer);
-    const resumeText = chunks.join("");
+    const resumeText = chunks.join(" ");
 
     const emailRegex = /[\w.-]+@[\w.-]+\.\w+/;
     const emailMatch = resumeText?.match(emailRegex);
+    console.log("Email", emailMatch);
 
     if (emailMatch) {
       await client.execute({
         sql: "INSERT INTO usuarios (process_id, email, resume, is_paid) VALUES (?, ?, ?, ?)",
         args: [processId, emailMatch[0], resumeText, false],
+      });
+    } else {
+      throw createError({
+        statusCode: 400,
+        statusMessage: "Curriculo invalido",
       });
     }
 
@@ -46,7 +52,7 @@ export default defineEventHandler(async (event) => {
   } catch (error) {
     const err = error as Error;
     throw createError({
-      statusCode: 500,
+      statusCode: 400,
       statusMessage: err.message,
     });
   }

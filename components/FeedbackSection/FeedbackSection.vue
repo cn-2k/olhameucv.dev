@@ -36,12 +36,28 @@
             </svg>
             Feedback
           </h2>
-          <div v-if="feedbackResponse" class="grid grid-cols-1 lg:grid-cols-2 gap-8 text-gray-800 text-center lg:text-justify">
-            <div v-for="item in feedbackResponseAnalyse" :key="item.section" class="bg-white rounded-lg shadow-md p-6" :class="{ 'lg:col-span-2': item.section === '🏅 Certificações' }">
-              <h1 class="text-lg font-bold mb-3 text-gray-700">{{ item.section }}</h1>
+          <div
+            v-if="feedbackResponse"
+            class="grid grid-cols-1 lg:grid-cols-2 gap-8 text-gray-800 text-center lg:text-justify"
+          >
+            <div
+              v-for="item in feedbackResponseAnalyse"
+              :key="item.section"
+              class="bg-white rounded-lg shadow-md p-6"
+              :class="{ 'lg:col-span-2': item.section === '🏅 Certificações' }"
+            >
+              <h1 class="text-lg font-bold mb-3 text-gray-700">
+                {{ item.section }}
+              </h1>
               <div class="space-y-2">
-                <p class="text-sm"><span class="font-semibold">🔍 Feedback:</span> {{ item.feedback }}</p>
-                <p class="text-sm"><span class="font-semibold">💡 Sugestões:</span> {{ item.suggestions }}</p>
+                <p class="text-sm">
+                  <span class="font-semibold">🔍 Feedback:</span>
+                  {{ item.feedback }}
+                </p>
+                <p class="text-sm">
+                  <span class="font-semibold">💡 Sugestões:</span>
+                  {{ item.suggestions }}
+                </p>
               </div>
             </div>
           </div>
@@ -74,7 +90,13 @@
                   placeholder="Email"
                   required
                 />
-                <Button :disabled="isResending" @click="handleResend"> <LucideLoader2 v-if="isResending" class="w-4 h-4 mr-2 animate-spin" />  {{ isResending ? "Reenviando..." : "Reenviar" }} </Button>
+                <Button :disabled="isResending" @click="handleResend">
+                  <LucideLoader2
+                    v-if="isResending"
+                    class="w-4 h-4 mr-2 animate-spin"
+                  />
+                  {{ isResending ? "Reenviando..." : "Reenviar" }}
+                </Button>
               </div>
             </div>
           </PopoverContent>
@@ -103,9 +125,7 @@ import {
 } from "@/components/ui/popover";
 import { Input } from "@/components/ui/input";
 import type { FeedbackProps } from "@/entities/Feedback";
-import { useFileUpload } from "@/composables/useFileUpload";
 
-const { feedback, showFeedback } = useFileUpload();
 const router = useRouter();
 const isResending = ref<boolean>(false);
 
@@ -144,8 +164,10 @@ const feedbackResponseAnalyse = [
   },
   {
     section: "💼 Experiências Profissionais",
-    feedback: feedbackResponse?.profissionalExperiences.feedback || "Sem feedback",
-    suggestions: feedbackResponse?.profissionalExperiences.suggestions || "Sem sugestões",
+    feedback:
+      feedbackResponse?.profissionalExperiences.feedback || "Sem feedback",
+    suggestions:
+      feedbackResponse?.profissionalExperiences.suggestions || "Sem sugestões",
   },
   {
     section: "🎓 Formação acadêmica",
@@ -160,7 +182,8 @@ const feedbackResponseAnalyse = [
   {
     section: "🏅 Certificações",
     feedback: feedbackResponse?.certifications.feedback || "Sem feedback",
-    suggestions: feedbackResponse?.certifications.suggestions || "Sem sugestões",
+    suggestions:
+      feedbackResponse?.certifications.suggestions || "Sem sugestões",
   },
-]
+];
 </script>

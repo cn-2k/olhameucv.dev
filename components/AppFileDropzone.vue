@@ -8,10 +8,8 @@
       />
       <UploadSection
         :is-processing-file="isProcessingFile"
-        :is-confirming-payment="isConfirmingPayment"
         @update:selected-file="selectedFile = $event"
         @handle-file="handleFile"
-        @start-payment="starPayment"
       />
     </div>
   </div>
@@ -20,31 +18,7 @@
 <script setup lang="ts">
 import { useFileUpload } from "@/composables/useFileUpload";
 
-const emit = defineEmits<{
-  (e: "update:showFeedback", value: boolean): boolean;
-}>();
-
 const selectedFile = ref<File | null>(null);
 
-const {
-  showFeedback,
-  feedback,
-  handleFile,
-  isProcessingFile,
-  isConfirmingPayment,
-  isPixPaid,
-  starPayment,
-} = useFileUpload();
-
-watch(
-  () => showFeedback.value,
-  () => {
-    emit("update:showFeedback", showFeedback.value);
-    if (showFeedback.value === false) {
-      isPixPaid.value = false;
-      feedback.value = "";
-    }
-  },
-  { immediate: true }
-);
+const { handleFile, isProcessingFile } = useFileUpload();
 </script>
