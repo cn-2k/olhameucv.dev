@@ -73,4 +73,11 @@ const router = useRouter();
 if (feedback.value) {
   router.push("/confirm");
 }
+
+useSeoMeta({
+  titleTemplate: "olhameucv.dev",
+  ogTitle: "👀 olhameucv.dev",
+  description: "Receba uma avaliação rápida e inteligente do seu currículo, com dicas de recrutadores experientes para melhorar suas chances no mercado.",
+  ogDescription: "Receba uma avaliação rápida e inteligente do seu currículo, com dicas de recrutadores experientes para melhorar suas chances no mercado.",
+})
 </script>

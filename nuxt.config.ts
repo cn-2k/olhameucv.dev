@@ -1,6 +1,6 @@
 // https://nuxt.com/docs/api/configuration/nuxt-config
 export default defineNuxtConfig({
-  devtools: { enabled: false },
+  devtools: { enabled: true },
 
   runtimeConfig: {
     RESEND_KEY: process.env.RESEND_KEY,
@@ -31,7 +31,7 @@ export default defineNuxtConfig({
   },
 
   site: {
-    url: "https://olhameucv-ai.vercel.app/",
+    url: "https://olhameucv.dev/",
   },
 
   css: ["@/assets/css/base.css"],
