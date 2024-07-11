@@ -2,11 +2,13 @@
   <NuxtLayout>
     <NuxtPage />
     <Toaster rich-colors />
+    <WhatsAppWidget />
   </NuxtLayout>
 </template>
 
 <script setup lang="ts">
 import { Toaster } from "@/components/ui/sonner";
+import WhatsAppWidget from "@/components/Widget/WhatsAppWidget.vue";
 
 useSeoMeta({
   title: "olhameucv.dev",

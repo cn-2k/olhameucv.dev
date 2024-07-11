@@ -23,6 +23,7 @@ export default withNuxt(
       "vue/singleline-html-element-content-newline": "off",
       "vue/comma-dangle": "off",
       "@stylistic/comma-dangle": "off",
+      "@stylistic/member-delimiter-style": "off",
       "comma-dangle": ["off"],
     },
   },
