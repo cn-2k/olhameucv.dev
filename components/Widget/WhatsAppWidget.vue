@@ -1,11 +1,12 @@
 <template>
   <div class="fixed bottom-4 right-4 md:bottom-8 md:right-8 flex flex-col items-end">
-    <Popover>
+    <Popover :open="popOverOpen">
       <PopoverTrigger>
-        <div class="bg-green-500 rounded-full p-4 text-white flex items-center justify-center group">
-          <LucideMessageCircleQuestion class="size-7" />
+        <div class="bg-green-500 rounded-full p-4 text-white flex items-center justify-center group" @click="popOverOpen = !popOverOpen">
+          <LucideMessageCircleQuestion v-if="!popOverOpen" class="size-7" />
+          <LucideX v-if="popOverOpen" class="size-7" />
           <span class="max-w-0 overflow-hidden group-hover:max-w-xs transition-all duration-500 ease-linear">
-            <span class="pl-2 font-semibold">Suporte</span>
+            <span class="pl-2 font-semibold">{{ !popOverOpen ? 'Suporte' : 'Fechar' }}</span>
           </span>
         </div>
       </PopoverTrigger>
@@ -35,6 +36,7 @@ import { useGlobalStore } from "@/store/GlobalStore";
 
 const globalStore = useGlobalStore();
 const supportMessage = ref<string>("Olá! Gostaria de obter mais informações sobre o serviço que a plataforma oferece.");
+const popOverOpen = ref<boolean>(false)
 
 const storeId = computed(() => {
   return globalStore.processId
