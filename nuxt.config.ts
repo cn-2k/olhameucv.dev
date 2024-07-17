@@ -45,6 +45,7 @@ export default defineNuxtConfig({
     "nuxt-lucide-icons",
     "@vue-email/nuxt",
     "nuxt-og-image",
+    "@nuxtjs/robots",
     "@pinia/nuxt",
     "@pinia-plugin-persistedstate/nuxt",
   ],
@@ -85,4 +86,10 @@ export default defineNuxtConfig({
       },
     },
   },
+
+  robots: {
+    enabled: true,
+    allow: ["/"],
+    disallow: ["/confirm"],
+  }
 });
