@@ -38,7 +38,7 @@
 
             <ERow :style="{ ...boxInfos, paddingTop: '0' }">
               <EColumn :style="containerButton" class="flex justify-center items-center mt-4" col-span="{2}">
-                <EButton href="#" class="bg-blue-700 p-4 text-white font-bold rounded"> 👀 Deseja avaliar mais? </EButton>
+                <EButton href="https://olhameucv.dev" class="bg-blue-700 p-4 text-white font-bold rounded"> 👀 Deseja avaliar mais? </EButton>
               </EColumn>
             </ERow>
           </ESection>

@@ -16,9 +16,7 @@
       </svg>
       <p class="text-lg font-bold text-zinc-600">
         🎉 Que bacana! O Seu currículo
-        <span class="text-green-500">foi analisado</span>, verifique o resultado
-        que <strong class="text-green-500">enviamos no seu e-mail</strong> ou
-        por aqui mesmo:
+        <span class="text-green-500">foi analisado</span>, verifique o resultado por aqui mesmo:
       </p>
       <div
         v-if="globalStore.feedback"
@@ -72,17 +70,17 @@
         <Popover v-if="globalStore.feedback">
           <PopoverTrigger as-child>
             <Button size="sm" variant="outline">
-              <LucideMail class="size-4 mr-2" /> Alterar ou reenviar e-mail
+              <LucideMail class="size-4 mr-2" /> Enviar por e-mail
             </Button>
           </PopoverTrigger>
           <PopoverContent class="w-full">
             <div class="flex flex-col gap-4">
               <div class="space-y-2">
                 <h4 class="font-medium leading-none">
-                  Alterar ou reenviar e-mail
+                  Enviar análise por e-mail
                 </h4>
                 <p class="text-sm text-muted-foreground">
-                  Iremos reenviar a sua análise!
+                  Iremos enviar a análise do seu currículo para o e-mail informado!
                 </p>
               </div>
               <div class="flex w-full max-w-sm items-center gap-1.5">
