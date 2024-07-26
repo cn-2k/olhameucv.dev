@@ -88,7 +88,7 @@ export default defineNuxtConfig({
   },
 
   robots: {
-    enabled: true,
+    enabled: false,
     allow: ["/"],
     disallow: ["/confirm"],
   }
