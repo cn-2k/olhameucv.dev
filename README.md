@@ -1,5 +1,7 @@
 # Nuxt 3 Minimal Starter
 
+![Captura de tela de 2024-08-17 20-08-58](https://github.com/user-attachments/assets/249af9db-cd3f-4562-925f-c102e891bbd7)
+
 Look at the [Nuxt 3 documentation](https://nuxt.com/docs/getting-started/introduction) to learn more.
 
 ## Setup
